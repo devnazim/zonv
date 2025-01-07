@@ -233,6 +233,12 @@ Override nested values with environment variable
 
 ```typescript
 process.env['server.port'] = 7000;
+
+const config = getZonfig({
+  schema: nestedSchema,
+});
+
+export { config };
 ```
 
 ## Type Safety
@@ -242,10 +248,6 @@ Zonfig ensures type safety for your configuration, meaning you get autocomplete 
 ## Contributing
 
 Contributions are welcome! If you have suggestions or issues, feel free to open a GitHub issue or submit a pull request.
-
-## License
-
-MIT License
 
 ---
 
