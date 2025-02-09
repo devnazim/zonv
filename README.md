@@ -40,15 +40,10 @@ import { z } from 'zod';
 import { getZonfig } from 'zonfig';
 
 // Define your configuration schema
-const configSchema = z.object({
-  PORT: z.number().default(3000),
-  DATABASE_URL: z.string().url(),
-});
+const configSchema = z.object({ PORT: z.number().default(3000), DATABASE_URL: z.string().url() });
 
 // Load and validate your configuration
-const config = getZonfig({
-  schema: configSchema,
-});
+const config = getZonfig({ schema: configSchema });
 
 export { config };
 ```
@@ -180,25 +175,17 @@ A type-safe configuration object.
 Override default config file paths.
 
 ```typescript
-const config = getZonfig({
-  schema: configSchema,
-  configPaths: './path/config.json',
-  secretsPaths: './path/secrets.json',
-});
+const config = getZonfig({ schema: configSchema, configPaths: './path/config.json', secretsPaths: './path/secrets.json' });
 ```
 
 Use multiple config source files.
 
 ```typescript
-const config = getZonfig({
-  schema: configSchema,
-  configPaths: ['./path/config1.json', './path/config2.json'],
-  secretsPaths: ['./path/secrets1.json', './path/secrets2.json'],
-});
+const config = getZonfig({ schema: configSchema, configPaths: ['./path/config1.json', './path/config2.json'], secretsPaths: ['./path/secrets1.json', './path/secrets2.json'] });
 ```
 
 Specify multiple config paths with string value where paths are seperated by comma with environment variables.
-This is might be usefull for configuring prod build with AWS secrets manager.
+This is might be usefull for configuring prod build with secrets manager and volume mapping.
 
 ```typescript
 const config = getZonfig({
@@ -212,19 +199,11 @@ Handle nested configurations and default values:
 
 ```typescript
 const nestedSchema = z.object({
-  server: z.object({
-    host: z.string().default('localhost'),
-    port: z.number().default(3000),
-  }),
-  database: z.object({
-    url: z.string().url(),
-    poolSize: z.number().default(10),
-  }),
+  server: z.object({ host: z.string().default('localhost'), port: z.number().default(3000) }),
+  database: z.object({ url: z.string().url(), poolSize: z.number().default(10) }),
 });
 
-const config = getZonfig({
-  schema: nestedSchema,
-});
+const config = getZonfig({ schema: nestedSchema });
 
 export { config };
 ```
@@ -234,9 +213,7 @@ Override nested values with environment variable
 ```typescript
 process.env['server.port'] = 7000;
 
-const config = getZonfig({
-  schema: nestedSchema,
-});
+const config = getZonfig({ schema: nestedSchema });
 
 export { config };
 ```
