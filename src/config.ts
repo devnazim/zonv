@@ -2,9 +2,9 @@ import { resolve } from 'node:path';
 import { cwd } from 'node:process';
 import { readFileSync } from 'node:fs';
 import { z, ZodArray, ZodObject } from 'zod';
-import merge from 'lodash.merge';
-import set from 'lodash.set';
-import get from 'lodash.get';
+import merge from 'lodash/merge';
+import set from 'lodash/set';
+import get from 'lodash/get';
 
 function getFileContent(path: string) {
   let fileContent;
