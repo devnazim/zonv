@@ -37,13 +37,13 @@ pnpm add zonfig
 ```typescript
 // config.ts
 import { z } from 'zod';
-import { getZonfig } from 'zonfig';
+import { getConfig } from 'zonfig';
 
 // Define your configuration schema
 const configSchema = z.object({ PORT: z.number().default(3000), DATABASE_URL: z.string().url() });
 
 // Load and validate your configuration
-const config = getZonfig({ schema: configSchema });
+const config = getConfig({ schema: configSchema });
 
 export { config };
 ```
@@ -164,7 +164,7 @@ Zonfig automatically merges configuration sources, with environment variables ta
   - array of config paths to merge e.g. `[/tmp/path/secrets1.json, /tmp/path/secrets2.json]`
   - string with config paths separated by comma e.g. `"/tmp/path/secrets1.json, /tmp/path/secrets2.json"`
 
-- **`zonfigENV`** string determine prefix for config file to load `{$zofigENV}.config.json` e.g. if `zonfigENV = production` zonfig will use `production.config.json`
+- **`env`** string determine prefix for config file to load `{$zofigENV}.config.json` e.g. if `env = production` zonfig will use `production.config.json`
 
 #### Returns:
 
@@ -175,20 +175,20 @@ A type-safe configuration object.
 Override default config file paths.
 
 ```typescript
-const config = getZonfig({ schema: configSchema, configPaths: './path/config.json', secretsPaths: './path/secrets.json' });
+const config = getConfig({ schema: configSchema, configPaths: './path/config.json', secretsPaths: './path/secrets.json' });
 ```
 
 Use multiple config source files.
 
 ```typescript
-const config = getZonfig({ schema: configSchema, configPaths: ['./path/config1.json', './path/config2.json'], secretsPaths: ['./path/secrets1.json', './path/secrets2.json'] });
+const config = getConfig({ schema: configSchema, configPaths: ['./path/config1.json', './path/config2.json'], secretsPaths: ['./path/secrets1.json', './path/secrets2.json'] });
 ```
 
 Specify multiple config paths with string value where paths are seperated by comma with environment variables.
 This is might be usefull for configuring prod build with secrets manager and volume mapping.
 
 ```typescript
-const config = getZonfig({
+const config = getConfig({
   schema: configSchema,
   configPaths: process.env.CONFIG_PATHS, // value:  "./config/config-prod.json"
   secretsPaths: process.env.SECRETS_PATHS, // value:  "/tmp/secrets1.json, /tmp/secrets2.json"
@@ -203,7 +203,7 @@ const nestedSchema = z.object({
   database: z.object({ url: z.string().url(), poolSize: z.number().default(10) }),
 });
 
-const config = getZonfig({ schema: nestedSchema });
+const config = getConfig({ schema: nestedSchema });
 
 export { config };
 ```
@@ -213,7 +213,7 @@ Override nested values with environment variable
 ```typescript
 process.env['server.port'] = 7000;
 
-const config = getZonfig({ schema: nestedSchema });
+const config = getConfig({ schema: nestedSchema });
 
 export { config };
 ```

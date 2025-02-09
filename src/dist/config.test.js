@@ -126,7 +126,7 @@ var createConfigFiles = function (files) { return __awaiter(void 0, void 0, void
         }
     });
 }); };
-node_test_1.describe('getZonfig', function () {
+node_test_1.describe('getConfig', function () {
     node_test_1.describe('get config paths', function () {
         node_test_1.it('use default value: ', function () {
             var configPaths = config_js_1.getPaths({ type: 'config' });
@@ -177,7 +177,7 @@ node_test_1.describe('getZonfig', function () {
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 4, 5, 7]);
-                        return [4 /*yield*/, config_js_1.getZonfig({ schema: schema, configPath: [path] })];
+                        return [4 /*yield*/, config_js_1.getConfig({ schema: schema, configPath: [path] })];
                     case 3:
                         config = _a.sent();
                         node_assert_1["default"].deepEqual(data, config);
@@ -206,7 +206,7 @@ node_test_1.describe('getZonfig', function () {
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 4, 5, 7]);
-                        return [4 /*yield*/, config_js_1.getZonfig({ schema: schema, configPath: [path] })];
+                        return [4 /*yield*/, config_js_1.getConfig({ schema: schema, configPath: [path] })];
                     case 3:
                         config = _a.sent();
                         node_assert_1["default"].deepEqual(data, config);
@@ -235,7 +235,7 @@ node_test_1.describe('getZonfig', function () {
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 4, 5, 7]);
-                        return [4 /*yield*/, config_js_1.getZonfig({ schema: schema, configPath: [path] })];
+                        return [4 /*yield*/, config_js_1.getConfig({ schema: schema, configPath: [path] })];
                     case 3:
                         config = _a.sent();
                         node_assert_1["default"].deepEqual(config.arr, data.arr.map(function (_a) {
@@ -269,7 +269,7 @@ node_test_1.describe('getZonfig', function () {
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 4, 5, 7]);
-                        return [4 /*yield*/, config_js_1.getZonfig({ schema: schema, configPath: [path] })];
+                        return [4 /*yield*/, config_js_1.getConfig({ schema: schema, configPath: [path] })];
                     case 3:
                         config = _a.sent();
                         node_assert_1["default"].equal(config.name, overrideName);
@@ -301,7 +301,7 @@ node_test_1.describe('getZonfig', function () {
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 4, 5, 7]);
-                        return [4 /*yield*/, config_js_1.getZonfig({ schema: schema, configPath: [path] })];
+                        return [4 /*yield*/, config_js_1.getConfig({ schema: schema, configPath: [path] })];
                     case 3:
                         config = _a.sent();
                         node_assert_1["default"].equal(config.nested.bar, nestedBar);
@@ -333,7 +333,7 @@ node_test_1.describe('getZonfig', function () {
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 4, 5, 7]);
-                        return [4 /*yield*/, config_js_1.getZonfig({ schema: schema, configPath: [path] })];
+                        return [4 /*yield*/, config_js_1.getConfig({ schema: schema, configPath: [path] })];
                     case 3:
                         config = _a.sent();
                         node_assert_1["default"].deepEqual(config.nested, nested);
@@ -368,7 +368,7 @@ node_test_1.describe('getZonfig', function () {
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 4, 5, 7]);
-                        return [4 /*yield*/, config_js_1.getZonfig({ schema: schema, configPath: [path] })];
+                        return [4 /*yield*/, config_js_1.getConfig({ schema: schema, configPath: [path] })];
                     case 3:
                         config = _a.sent();
                         node_assert_1["default"].deepEqual(config.arr, arr);
@@ -400,7 +400,7 @@ node_test_1.describe('getZonfig', function () {
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 4, 5, 7]);
-                        return [4 /*yield*/, config_js_1.getZonfig({ schema: schema, configPath: [path] })];
+                        return [4 /*yield*/, config_js_1.getConfig({ schema: schema, configPath: [path] })];
                     case 3:
                         config = _a.sent();
                         node_assert_1["default"].equal(config.name, overrideName);
@@ -435,7 +435,7 @@ node_test_1.describe('getZonfig', function () {
                         _a.label = 3;
                     case 3:
                         _a.trys.push([3, 5, 6, 9]);
-                        return [4 /*yield*/, config_js_1.getZonfig({ schema: schema, configPath: [path1, path2] })];
+                        return [4 /*yield*/, config_js_1.getConfig({ schema: schema, configPath: [path1, path2] })];
                     case 4:
                         config = _a.sent();
                         node_assert_1["default"].deepEqual(merge_1["default"](data1, data2), config);
@@ -475,7 +475,7 @@ node_test_1.describe('getZonfig', function () {
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 4, 5, 7]);
-                        return [4 /*yield*/, config_js_1.getZonfig({ schema: schema, configPath: configPath, secretsPath: secretsPath })];
+                        return [4 /*yield*/, config_js_1.getConfig({ schema: schema, configPath: configPath, secretsPath: secretsPath })];
                     case 3:
                         config = _a.sent();
                         node_assert_1["default"].deepEqual(merge_1["default"](configData, secretsData), config);

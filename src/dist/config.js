@@ -7,7 +7,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 exports.__esModule = true;
-exports.getZonfig = exports.getPaths = void 0;
+exports.getConfig = exports.getPaths = void 0;
 var node_path_1 = require("node:path");
 var node_process_1 = require("node:process");
 var node_fs_1 = require("node:fs");
@@ -70,10 +70,10 @@ var getPropertiesPathsFromSchema = function (schema) {
     getPaths(schema);
     return paths;
 };
-exports.getZonfig = function (_a) {
-    var schema = _a.schema, configPath = _a.configPath, secretsPath = _a.secretsPath, zonfigENV = _a.zonfigENV;
+exports.getConfig = function (_a) {
+    var schema = _a.schema, configPath = _a.configPath, secretsPath = _a.secretsPath, env = _a.env;
     var config = {};
-    var filePaths = __spreadArrays(exports.getPaths({ type: 'config', path: configPath, env: zonfigENV }), exports.getPaths({ type: 'secrets', path: secretsPath, env: zonfigENV }));
+    var filePaths = __spreadArrays(exports.getPaths({ type: 'config', path: configPath, env: env }), exports.getPaths({ type: 'secrets', path: secretsPath, env: env }));
     for (var _i = 0, filePaths_1 = filePaths; _i < filePaths_1.length; _i++) {
         var path = filePaths_1[_i];
         merge_1["default"](config, getFileContent(path));
