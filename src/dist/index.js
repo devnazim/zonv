@@ -8,4 +8,4 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
 }));
 exports.__esModule = true;
 var config_js_1 = require("./config.js");
-__createBinding(exports, config_js_1, "getConfig", "default");
+__createBinding(exports, config_js_1, "getConfig");
