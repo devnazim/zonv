@@ -7,7 +7,7 @@ import { dirname, sep, resolve } from 'node:path';
 import { z } from 'zod';
 import merge from 'lodash/merge';
 
-import { getZonfig, getPaths } from './config.js';
+import { getConfig, getPaths } from './config.js';
 
 const createConfigFiles = async (files: { path: string; data: any }[]) => {
   const dirToDelete: string[] = [];
@@ -43,7 +43,7 @@ const createConfigFiles = async (files: { path: string; data: any }[]) => {
   };
 };
 
-describe('getZonfig', () => {
+describe('getConfig', () => {
   describe('get config paths', () => {
     it('use default value: ', () => {
       const configPaths = getPaths({ type: 'config' });
@@ -86,7 +86,7 @@ describe('getZonfig', () => {
       const data = { name: 'foo', birthYear: 2000, nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
       const { cleanup } = await createConfigFiles([{ path, data }]);
       try {
-        const config = await getZonfig({ schema, configPath: [path] });
+        const config = await getConfig({ schema, configPath: [path] });
         assert.deepEqual(data, config);
       } catch (e) {
         throw e;
@@ -99,7 +99,7 @@ describe('getZonfig', () => {
       const data = { name: 'foo', nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
       const { cleanup } = await createConfigFiles([{ path, data }]);
       try {
-        const config = await getZonfig({ schema, configPath: [path] });
+        const config = await getConfig({ schema, configPath: [path] });
         assert.deepEqual(data, config);
       } catch (e) {
         throw e;
@@ -112,7 +112,7 @@ describe('getZonfig', () => {
       const data = { name: 'foo', nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: '1', val: 123 }] };
       const { cleanup } = await createConfigFiles([{ path, data }]);
       try {
-        const config = await getZonfig({ schema, configPath: [path] });
+        const config = await getConfig({ schema, configPath: [path] });
         assert.deepEqual(
           config.arr,
           data.arr.map(({ id, val }) => ({ id: Number(id), val: String(val) }))
@@ -130,7 +130,7 @@ describe('getZonfig', () => {
       process.env.name = overrideName;
       const { cleanup } = await createConfigFiles([{ path, data }]);
       try {
-        const config = await getZonfig({ schema, configPath: [path] });
+        const config = await getConfig({ schema, configPath: [path] });
         assert.equal(config.name, overrideName);
       } catch (e) {
         throw e;
@@ -146,7 +146,7 @@ describe('getZonfig', () => {
       process.env['nested.bar'] = nestedBar;
       const { cleanup } = await createConfigFiles([{ path, data }]);
       try {
-        const config = await getZonfig({ schema, configPath: [path] });
+        const config = await getConfig({ schema, configPath: [path] });
         assert.equal(config.nested.bar, nestedBar);
       } catch (e) {
         throw e;
@@ -162,7 +162,7 @@ describe('getZonfig', () => {
       process.env.nested = JSON.stringify(nested);
       const { cleanup } = await createConfigFiles([{ path, data }]);
       try {
-        const config = await getZonfig({ schema, configPath: [path] });
+        const config = await getConfig({ schema, configPath: [path] });
         assert.deepEqual(config.nested, nested);
       } catch (e) {
         throw e;
@@ -181,7 +181,7 @@ describe('getZonfig', () => {
       process.env.arr = JSON.stringify(arr);
       const { cleanup } = await createConfigFiles([{ path, data }]);
       try {
-        const config = await getZonfig({ schema, configPath: [path] });
+        const config = await getConfig({ schema, configPath: [path] });
         assert.deepEqual(config.arr, arr);
       } catch (e) {
         throw e;
@@ -197,7 +197,7 @@ describe('getZonfig', () => {
       process.env.name = overrideName;
       const { cleanup } = await createConfigFiles([{ path, data }]);
       try {
-        const config = await getZonfig({ schema, configPath: [path] });
+        const config = await getConfig({ schema, configPath: [path] });
         assert.equal(config.name, overrideName);
       } catch (e) {
         throw e;
@@ -214,7 +214,7 @@ describe('getZonfig', () => {
       const { cleanup: cleanup1 } = await createConfigFiles([{ path: path1, data: data1 }]);
       const { cleanup: cleanup2 } = await createConfigFiles([{ path: path2, data: data2 }]);
       try {
-        const config = await getZonfig({ schema, configPath: [path1, path2] });
+        const config = await getConfig({ schema, configPath: [path1, path2] });
         assert.deepEqual(merge(data1, data2), config);
       } catch (e) {
         throw e;
@@ -237,7 +237,7 @@ describe('getZonfig', () => {
         { path: secretsPath, data: secretsData },
       ]);
       try {
-        const config = await getZonfig({ schema, configPath, secretsPath });
+        const config = await getConfig({ schema, configPath, secretsPath });
         assert.deepEqual(merge(configData, secretsData), config);
       } catch (e) {
         throw e;

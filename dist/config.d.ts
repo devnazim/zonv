@@ -4,10 +4,10 @@ export declare const getPaths: ({ type, path, env }: {
     path?: string[] | string;
     env?: string;
 }) => string[];
-export declare const getZonfig: <S extends ZodObject<any, any, z.ZodTypeAny, any, any>>({ schema, configPath, secretsPath, zonfigENV, }: {
+export declare const getConfig: <S extends ZodObject<any, any, z.ZodTypeAny, any, any>>({ schema, configPath, secretsPath, env, }: {
     schema: S;
     configPath?: string | string[];
     secretsPath?: string | string[];
-    zonfigENV?: string;
+    env?: string;
 }) => z.infer<S>;
 //# sourceMappingURL=config.d.ts.map

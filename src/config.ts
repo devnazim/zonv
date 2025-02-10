@@ -58,19 +58,19 @@ const getPropertiesPathsFromSchema = <S extends ZodObject<any, any, z.ZodTypeAny
   return paths;
 };
 
-export const getZonfig = <S extends ZodObject<any, any, z.ZodTypeAny, any, any>>({
+export const getConfig = <S extends ZodObject<any, any, z.ZodTypeAny, any, any>>({
   schema,
   configPath,
   secretsPath,
-  zonfigENV,
+  env,
 }: {
   schema: S;
   configPath?: string | string[];
   secretsPath?: string | string[];
-  zonfigENV?: string;
+  env?: string;
 }) => {
   const config = {};
-  const filePaths = [...getPaths({ type: 'config', path: configPath, env: zonfigENV }), ...getPaths({ type: 'secrets', path: secretsPath, env: zonfigENV })];
+  const filePaths = [...getPaths({ type: 'config', path: configPath, env }), ...getPaths({ type: 'secrets', path: secretsPath, env })];
   for (const path of filePaths) {
     merge(config, getFileContent(path));
   }

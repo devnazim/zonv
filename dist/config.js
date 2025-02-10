@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getZonfig = exports.getPaths = void 0;
+exports.getConfig = exports.getPaths = void 0;
 const node_path_1 = require("node:path");
 const node_process_1 = require("node:process");
 const node_fs_1 = require("node:fs");
@@ -64,9 +64,9 @@ const getPropertiesPathsFromSchema = (schema) => {
     getPaths(schema);
     return paths;
 };
-const getZonfig = ({ schema, configPath, secretsPath, zonfigENV, }) => {
+const getConfig = ({ schema, configPath, secretsPath, env, }) => {
     const config = {};
-    const filePaths = [...(0, exports.getPaths)({ type: 'config', path: configPath, env: zonfigENV }), ...(0, exports.getPaths)({ type: 'secrets', path: secretsPath, env: zonfigENV })];
+    const filePaths = [...(0, exports.getPaths)({ type: 'config', path: configPath, env }), ...(0, exports.getPaths)({ type: 'secrets', path: secretsPath, env })];
     for (const path of filePaths) {
         (0, merge_1.default)(config, getFileContent(path));
     }
@@ -86,4 +86,4 @@ const getZonfig = ({ schema, configPath, secretsPath, zonfigENV, }) => {
     }
     return schema.parse(config);
 };
-exports.getZonfig = getZonfig;
+exports.getConfig = getConfig;

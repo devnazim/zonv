@@ -54,7 +54,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
         }),
     };
 });
-(0, node_test_1.describe)('getZonfig', () => {
+(0, node_test_1.describe)('getConfig', () => {
     (0, node_test_1.describe)('get config paths', () => {
         (0, node_test_1.it)('use default value: ', () => {
             const configPaths = (0, config_js_1.getPaths)({ type: 'config' });
@@ -97,7 +97,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             const data = { name: 'foo', birthYear: 2000, nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
             const { cleanup } = yield createConfigFiles([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getZonfig)({ schema, configPath: [path] });
+                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.deepEqual(data, config);
             }
             catch (e) {
@@ -112,7 +112,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             const data = { name: 'foo', nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
             const { cleanup } = yield createConfigFiles([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getZonfig)({ schema, configPath: [path] });
+                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.deepEqual(data, config);
             }
             catch (e) {
@@ -127,7 +127,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             const data = { name: 'foo', nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: '1', val: 123 }] };
             const { cleanup } = yield createConfigFiles([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getZonfig)({ schema, configPath: [path] });
+                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.deepEqual(config.arr, data.arr.map(({ id, val }) => ({ id: Number(id), val: String(val) })));
             }
             catch (e) {
@@ -144,7 +144,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             process.env.name = overrideName;
             const { cleanup } = yield createConfigFiles([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getZonfig)({ schema, configPath: [path] });
+                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.equal(config.name, overrideName);
             }
             catch (e) {
@@ -162,7 +162,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             process.env['nested.bar'] = nestedBar;
             const { cleanup } = yield createConfigFiles([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getZonfig)({ schema, configPath: [path] });
+                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.equal(config.nested.bar, nestedBar);
             }
             catch (e) {
@@ -180,7 +180,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             process.env.nested = JSON.stringify(nested);
             const { cleanup } = yield createConfigFiles([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getZonfig)({ schema, configPath: [path] });
+                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.deepEqual(config.nested, nested);
             }
             catch (e) {
@@ -201,7 +201,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             process.env.arr = JSON.stringify(arr);
             const { cleanup } = yield createConfigFiles([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getZonfig)({ schema, configPath: [path] });
+                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.deepEqual(config.arr, arr);
             }
             catch (e) {
@@ -219,7 +219,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             process.env.name = overrideName;
             const { cleanup } = yield createConfigFiles([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getZonfig)({ schema, configPath: [path] });
+                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.equal(config.name, overrideName);
             }
             catch (e) {
@@ -238,7 +238,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             const { cleanup: cleanup1 } = yield createConfigFiles([{ path: path1, data: data1 }]);
             const { cleanup: cleanup2 } = yield createConfigFiles([{ path: path2, data: data2 }]);
             try {
-                const config = yield (0, config_js_1.getZonfig)({ schema, configPath: [path1, path2] });
+                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path1, path2] });
                 node_assert_1.default.deepEqual((0, merge_1.default)(data1, data2), config);
             }
             catch (e) {
@@ -262,7 +262,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
                 { path: secretsPath, data: secretsData },
             ]);
             try {
-                const config = yield (0, config_js_1.getZonfig)({ schema, configPath, secretsPath });
+                const config = yield (0, config_js_1.getConfig)({ schema, configPath, secretsPath });
                 node_assert_1.default.deepEqual((0, merge_1.default)(configData, secretsData), config);
             }
             catch (e) {
