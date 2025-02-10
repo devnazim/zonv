@@ -1,6 +1,6 @@
 {
   "name": "zonv",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "configure your env with zod validation schema",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
