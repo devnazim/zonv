@@ -73,7 +73,7 @@ const getConfig = ({ schema, configPath, secretsPath, env, }) => {
     const propertiesPaths = getPropertiesPathsFromSchema(schema);
     for (const path of propertiesPaths) {
         try {
-            const envValue = process.env[path];
+            const envValue = process.env[path.split('.').join('_')];
             if (envValue) {
                 const schemaProp = (0, get_1.default)(schema.shape, path);
                 const v = schemaProp instanceof zod_1.ZodObject || schemaProp instanceof zod_1.ZodArray ? JSON.parse(envValue) : envValue;

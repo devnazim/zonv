@@ -77,7 +77,7 @@ export const getConfig = <S extends ZodObject<any, any, z.ZodTypeAny, any, any>>
   const propertiesPaths = getPropertiesPathsFromSchema(schema);
   for (const path of propertiesPaths) {
     try {
-      const envValue = process.env[path];
+      const envValue = process.env[path.split('.').join('_')];
       if (envValue) {
         const schemaProp = get(schema.shape, path);
         const v = schemaProp instanceof ZodObject || schemaProp instanceof ZodArray ? JSON.parse(envValue) : envValue;

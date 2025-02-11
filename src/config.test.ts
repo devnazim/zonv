@@ -143,7 +143,7 @@ describe('getConfig', () => {
       const path = './tmp/test/config.json';
       const data = { name: 'foo', birthYear: 2000, nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
       const nestedBar = 'foo';
-      process.env['nested.bar'] = nestedBar;
+      process.env['nested_bar'] = nestedBar;
       const { cleanup } = await createConfigFiles([{ path, data }]);
       try {
         const config = await getConfig({ schema, configPath: [path] });
@@ -152,7 +152,7 @@ describe('getConfig', () => {
         throw e;
       } finally {
         await cleanup();
-        delete process.env['nested.bar'];
+        delete process.env['nested_bar'];
       }
     });
     it('override object', async () => {
