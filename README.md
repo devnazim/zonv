@@ -1,6 +1,6 @@
-# Zonfig
+# Zonv
 
-Zonfig is a package that enables you to validate your application configuration using Zod schemas. It supports multiple configuration sources, including files and environment variables, with environment variables taking precedence. Zonfig ensures type safety, making your configuration robust and reliable.
+Zonv is a package that enables you to validate your application configuration using Zod schemas. It supports multiple configuration sources, including files and environment variables, with environment variables taking precedence. Zonv ensures type safety, making your configuration robust and reliable.
 
 ## Features
 
@@ -12,19 +12,19 @@ Zonfig is a package that enables you to validate your application configuration 
 ## Installation
 
 ```bash
-npm install zonfig
+npm install zonv
 ```
 
 Or with Yarn:
 
 ```bash
-yarn add zonfig
+yarn add zonv
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add zonfig
+pnpm add zonv
 ```
 
 ## Usage
@@ -32,12 +32,12 @@ pnpm add zonfig
 ### Basic Example
 
 1. Define your configuration schema using Zod.
-2. Use Zonfig to load and validate your configuration.
+2. Use Zonv to load and validate your configuration.
 
 ```typescript
 // config.ts
 import { z } from 'zod';
-import { getConfig } from 'zonfig';
+import { getConfig } from 'zonv';
 
 // Define your configuration schema
 const configSchema = z.object({ PORT: z.number().default(3000), DATABASE_URL: z.string().url() });
@@ -69,7 +69,7 @@ project/
 
 #### File
 
-By default zonfig use `config/config.json` and `secrets/secrets.json` as source files.
+By default zonv use `config/config.json` and `secrets/secrets.json` as source files.
 Provide configuration in a JSON file:
 
 ```javascript
@@ -143,11 +143,11 @@ OR use env package.
 
 ### Merging and Precedence
 
-Zonfig automatically merges configuration sources, with environment variables taking precedence over file-based configurations.
+Zonv automatically merges configuration sources, with environment variables taking precedence over file-based configurations.
 
 ## API
 
-### `zonfig(options)`
+### `zonv(options)`
 
 #### Options:
 
@@ -164,7 +164,7 @@ Zonfig automatically merges configuration sources, with environment variables ta
   - array of config paths to merge e.g. `[/tmp/path/secrets1.json, /tmp/path/secrets2.json]`
   - string with config paths separated by comma e.g. `"/tmp/path/secrets1.json, /tmp/path/secrets2.json"`
 
-- **`env`** string determine prefix for config file to load `{$zofigENV}.config.json` e.g. if `env = production` zonfig will use `production.config.json`
+- **`env`** string determine prefix for config file to load `{$zofigENV}.config.json` e.g. if `env = production` zonv will use `production.config.json`
 
 #### Returns:
 
@@ -175,13 +175,21 @@ A type-safe configuration object.
 Override default config file paths.
 
 ```typescript
-const config = getConfig({ schema: configSchema, configPaths: './path/config.json', secretsPaths: './path/secrets.json' });
+const config = getConfig({
+  schema: configSchema,
+  configPaths: './path/config.json',
+  secretsPaths: './path/secrets.json'
+});
 ```
 
 Use multiple config source files.
 
 ```typescript
-const config = getConfig({ schema: configSchema, configPaths: ['./path/config1.json', './path/config2.json'], secretsPaths: ['./path/secrets1.json', './path/secrets2.json'] });
+const config = getConfig({
+  schema: configSchema,
+  configPaths: ['./path/config1.json', './path/config2.json'],
+  secretsPaths: ['./path/secrets1.json', './path/secrets2.json']
+});
 ```
 
 Specify multiple config paths with string value where paths are seperated by comma with environment variables.
@@ -199,8 +207,14 @@ Handle nested configurations and default values:
 
 ```typescript
 const nestedSchema = z.object({
-  server: z.object({ host: z.string().default('localhost'), port: z.number().default(3000) }),
-  database: z.object({ url: z.string().url(), poolSize: z.number().default(10) }),
+  server: z.object({
+    host: z.string().default('localhost'),
+    port: z.number().default(3000)
+  }),
+  database: z.object({
+    url: z.string().url(),
+    poolSize: z.number().default(10)
+  }),
 });
 
 const config = getConfig({ schema: nestedSchema });
@@ -211,16 +225,29 @@ export { config };
 Override nested values with environment variable
 
 ```typescript
-process.env['server.port'] = 7000;
+const nestedSchema = z.object({
+  server: z.object({
+    host: z.string().default('localhost'),
+    port: z.number().default(3000)
+  }),
+  database: z.object({
+    url: z.string().url(),
+    poolSize: z.number().default(10)
+  }),
+});
+
+process.env['server_port'] = 7000; // Use "_" symbol to name environment variable in order to override nested property.
 
 const config = getConfig({ schema: nestedSchema });
+
+console.log(config.server.port) // 7000
 
 export { config };
 ```
 
 ## Type Safety
 
-Zonfig ensures type safety for your configuration, meaning you get autocomplete and type checking in your TypeScript project. Errors in your configuration are caught at runtime during validation.
+Zonv ensures type safety for your configuration, meaning you get autocomplete and type checking in your TypeScript project. Errors in your configuration are caught at runtime during validation.
 
 ## Contributing
 
@@ -228,4 +255,4 @@ Contributions are welcome! If you have suggestions or issues, feel free to open 
 
 ---
 
-Start building type-safe, validated configurations with Zonfig today!
+Start building type-safe, validated configurations with Zonv today!

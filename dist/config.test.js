@@ -159,7 +159,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             const path = './tmp/test/config.json';
             const data = { name: 'foo', birthYear: 2000, nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
             const nestedBar = 'foo';
-            process.env['nested.bar'] = nestedBar;
+            process.env['nested_bar'] = nestedBar;
             const { cleanup } = yield createConfigFiles([{ path, data }]);
             try {
                 const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
@@ -170,7 +170,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             }
             finally {
                 yield cleanup();
-                delete process.env['nested.bar'];
+                delete process.env['nested_bar'];
             }
         }));
         (0, node_test_1.it)('override object', () => __awaiter(void 0, void 0, void 0, function* () {
