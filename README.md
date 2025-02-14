@@ -1,12 +1,14 @@
 # Zonv
 
-Zonv is a package that enables you to validate your application configuration using Zod schemas. It supports multiple configuration sources, including files and environment variables, with environment variables taking precedence. Zonv ensures type safety, making your configuration robust and reliable.
+Zonv is a package that enables you to validate your application configuration using Zod schemas. It supports multiple configuration sources, including json files and environment variables, with environment variables taking precedence.
 
 ## Features
 
 - **Zod Schema Validation**: Define and validate your configuration with [Zod](https://github.com/colinhacks/zod) schemas.
 - **Multiple Sources**: Use files and environment variables as configuration sources.
 - **Override Priority**: Environment variables override values specified in config files.
+- **Isolated configuration for each developer**: Use default config/config.json file as your personal config and add it to gitignore. Use config/example.config.json as an example for other devs.
+- **Multiple Schemas**: Use different validation schema for production, dev and staging environments.
 - **Type Safety**: Get full TypeScript support for your configuration.
 
 ## Installation
@@ -29,25 +31,6 @@ pnpm add zonv
 
 ## Usage
 
-### Basic Example
-
-1. Define your configuration schema using Zod.
-2. Use Zonv to load and validate your configuration.
-
-```typescript
-// config.ts
-import { z } from 'zod';
-import { getConfig } from 'zonv';
-
-// Define your configuration schema
-const configSchema = z.object({ PORT: z.number().default(3000), DATABASE_URL: z.string().url() });
-
-// Load and validate your configuration
-const config = getConfig({ schema: configSchema });
-
-export { config };
-```
-
 ### Project structure example:
 
 ```plaintext
@@ -55,14 +38,39 @@ project/
 ├── config/
 │   ├── production.config.json
 │   ├── staging.config.json
-│   ├── dev.config.json
+│   ├── example.config.json
 │   └── config.json
 ├── secrets/
-│   ├── dev.secrets.json
+│   ├── example.secrets.json
 │   └── secrets.json
 ├── config.ts
 ├── .gitignore
 └── tsconfig.json
+```
+
+### Basic Example
+
+1. Define your configuration schema using Zod.
+2. Use Zonv to load and validate your configuration (config/config.json by default).
+
+```typescript
+// config.ts
+import { z } from 'zod';
+import { getConfig } from 'zonv';
+
+// Define your configuration schema
+const configSchema = z.object({
+  PORT: z.number().default(3000),
+  DATABASE_URL: z.string().url()
+});
+
+// Load and validate your configuration from config folder
+const config = getConfig({
+  schema: configSchema,
+  env: process.env.APP_ENV // optional. Determine file to get config from (config/{env}.config.json).
+});
+
+export { config };
 ```
 
 ### Configuration Sources
@@ -87,7 +95,7 @@ Provide configuration in a JSON file:
 }
 ```
 
-In order to isolate your personal setup add `config.json` and `secrets.json` to `.gitignore` and specify configuration expample in `dev.config.json` and `dev.secrets.json`
+In order to isolate your personal setup add `config.json` and `secrets.json` to `.gitignore` and specify configuration expample in `example.config.json` and `example.secrets.json`
 
 ```
 # .gitignore
@@ -96,7 +104,7 @@ secrets/secrets.json
 ```
 
 ```javascript
-// config/dev.config.json
+// config/example.config.json
 {
   "PORT": 8080,
   "DATABASE_URL": "https://example.com/database"
@@ -104,14 +112,14 @@ secrets/secrets.json
 ```
 
 ```javascript
-// secrets/dev.secrets.json
+// secrets/example.secrets.json
 {
   "JWT_SERCRT": "for dev env generate this value using echo -n {your secret} | sha256sum",
   "SOME_API_KEY": "ask admin for this key"
 }
 ```
 
-> ⚠️ WARNING: DON'T add secrets to your git repo. Note that are NO production or staging secrets. Only your personal secrets and `dev.secrets.json` as an expample. Use secrets manager or environment variables for production.
+> ⚠️ WARNING: DON'T add secrets to your git repo. Note that are NO production or staging secrets. Only your personal secrets and `example.secrets.json` as an expample. Use environment variables or volume mapping with secrets managers for production.
 
 Add config path to your tsconfig.json
 
@@ -133,7 +141,7 @@ console.log(config.PORT); // Access type-safe configuration
 
 #### Environment Variables
 
-Override configuration using environment variables:
+Override OR define configuration using environment variables:
 
 ```bash
 PORT=4000 DATABASE_URL=https://new-db.example.com node app.js
@@ -164,7 +172,7 @@ Zonv automatically merges configuration sources, with environment variables taki
   - array of config paths to merge e.g. `[/tmp/path/secrets1.json, /tmp/path/secrets2.json]`
   - string with config paths separated by comma e.g. `"/tmp/path/secrets1.json, /tmp/path/secrets2.json"`
 
-- **`env`** string determine prefix for config file to load `{$zofigENV}.config.json` e.g. if `env = production` zonv will use `production.config.json`
+- **`env`** string determine prefix for config file to load `{env}.config.json` e.g. if `env = production` zonv will use `production.config.json`
 
 #### Returns:
 
@@ -236,7 +244,7 @@ const nestedSchema = z.object({
   }),
 });
 
-process.env['server_port'] = 7000; // Use "_" symbol to name environment variable in order to override nested property.
+process.env['server_port'] = 7000; // Use "_" symbol to name environment variable in order to override OR define nested property.
 
 const config = getConfig({ schema: nestedSchema });
 

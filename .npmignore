@@ -2,3 +2,8 @@
 dist/**.test.*
 node_modules
 src
+.editorconfig
+.prettierignore
+.prettierrc
+eslint.config.mjs
+tsconfig.json
