@@ -1,9 +1,13 @@
 {
   "name": "zonv",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "configure your env with zod validation schema",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devnazim/zonv"
+  },
   "scripts": {
     "test": "npm run build && node --test ./dist/*.test.js",
     "build": "rm -rf ./dist && tsc -b"
