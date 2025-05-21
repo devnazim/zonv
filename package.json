@@ -1,6 +1,6 @@
 {
   "name": "zonv",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "configure your env with zod validation schema",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,7 +36,7 @@
     "typescript-eslint": "^8.23.0"
   },
   "peerDependencies": {
-    "zod": "3.25.13"
+    "zod": "3.25.16"
   },
   "dependencies": {
     "lodash.get": "^4.4.2",
