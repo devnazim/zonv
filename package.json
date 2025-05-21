@@ -36,7 +36,7 @@
     "typescript-eslint": "^8.23.0"
   },
   "peerDependencies": {
-    "zod": "3.25.16"
+    "zod": "^3.24.1"
   },
   "dependencies": {
     "lodash.get": "^4.4.2",
