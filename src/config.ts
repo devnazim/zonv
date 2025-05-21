@@ -2,9 +2,9 @@ import { resolve } from 'node:path';
 import { cwd } from 'node:process';
 import { readFileSync } from 'node:fs';
 import { z, ZodArray, ZodObject } from 'zod';
-import merge from 'lodash/merge';
-import set from 'lodash/set';
-import get from 'lodash/get';
+import merge from 'lodash.merge';
+import set from 'lodash.set';
+import get from 'lodash.get';
 
 function getFileContent(path: string) {
   let fileContent;
@@ -43,9 +43,11 @@ export const getPaths = ({ type, path, env }: { type: 'config' | 'secrets'; path
   return pathArr.filter((p) => p.trim().length > 0);
 };
 
-const getPropertiesPathsFromSchema = <S extends ZodObject<any, any, z.ZodTypeAny, any, any>>(schema: S) => {
+type ZodObjectType = z.SomeZodObject
+
+const getPropertiesPathsFromSchema = <S extends ZodObjectType>(schema: S) => {
   const paths: string[] = [];
-  const getPaths = (obj: ZodObject<any, any, z.ZodTypeAny, any, any>, prefix: string[] = []) => {
+  const getPaths = (obj: ZodObjectType, prefix: string[] = []) => {
     const keys = obj instanceof ZodObject ? Object.keys(obj.keyof().Values) : [];
     for (const key of keys) {
       paths.push([...prefix, key].join('.'));
@@ -58,7 +60,7 @@ const getPropertiesPathsFromSchema = <S extends ZodObject<any, any, z.ZodTypeAny
   return paths;
 };
 
-export const getConfig = <S extends ZodObject<any, any, z.ZodTypeAny, any, any>>({
+export const getConfig = <S extends ZodObjectType>({
   schema,
   configPath,
   secretsPath,

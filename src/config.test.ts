@@ -5,7 +5,7 @@ import { existsSync } from 'node:fs';
 import { cwd } from 'node:process';
 import { dirname, sep, resolve } from 'node:path';
 import { z } from 'zod';
-import merge from 'lodash/merge';
+import merge from 'lodash.merge';
 
 import { getConfig, getPaths } from './config.js';
 

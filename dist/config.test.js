@@ -19,7 +19,7 @@ const node_fs_1 = require("node:fs");
 const node_process_1 = require("node:process");
 const node_path_1 = require("node:path");
 const zod_1 = require("zod");
-const merge_1 = __importDefault(require("lodash/merge"));
+const lodash_merge_1 = __importDefault(require("lodash.merge"));
 const config_js_1 = require("./config.js");
 const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function* () {
     const dirToDelete = [];
@@ -239,7 +239,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             const { cleanup: cleanup2 } = yield createConfigFiles([{ path: path2, data: data2 }]);
             try {
                 const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path1, path2] });
-                node_assert_1.default.deepEqual((0, merge_1.default)(data1, data2), config);
+                node_assert_1.default.deepEqual((0, lodash_merge_1.default)(data1, data2), config);
             }
             catch (e) {
                 throw e;
@@ -263,7 +263,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             ]);
             try {
                 const config = yield (0, config_js_1.getConfig)({ schema, configPath, secretsPath });
-                node_assert_1.default.deepEqual((0, merge_1.default)(configData, secretsData), config);
+                node_assert_1.default.deepEqual((0, lodash_merge_1.default)(configData, secretsData), config);
             }
             catch (e) {
                 throw e;

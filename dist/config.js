@@ -8,9 +8,9 @@ const node_path_1 = require("node:path");
 const node_process_1 = require("node:process");
 const node_fs_1 = require("node:fs");
 const zod_1 = require("zod");
-const merge_1 = __importDefault(require("lodash/merge"));
-const set_1 = __importDefault(require("lodash/set"));
-const get_1 = __importDefault(require("lodash/get"));
+const lodash_merge_1 = __importDefault(require("lodash.merge"));
+const lodash_set_1 = __importDefault(require("lodash.set"));
+const lodash_get_1 = __importDefault(require("lodash.get"));
 function getFileContent(path) {
     let fileContent;
     try {
@@ -68,16 +68,16 @@ const getConfig = ({ schema, configPath, secretsPath, env, }) => {
     const config = {};
     const filePaths = [...(0, exports.getPaths)({ type: 'config', path: configPath, env }), ...(0, exports.getPaths)({ type: 'secrets', path: secretsPath, env })];
     for (const path of filePaths) {
-        (0, merge_1.default)(config, getFileContent(path));
+        (0, lodash_merge_1.default)(config, getFileContent(path));
     }
     const propertiesPaths = getPropertiesPathsFromSchema(schema);
     for (const path of propertiesPaths) {
         try {
             const envValue = process.env[path.split('.').join('_')];
             if (envValue) {
-                const schemaProp = (0, get_1.default)(schema.shape, path);
+                const schemaProp = (0, lodash_get_1.default)(schema.shape, path);
                 const v = schemaProp instanceof zod_1.ZodObject || schemaProp instanceof zod_1.ZodArray ? JSON.parse(envValue) : envValue;
-                (0, set_1.default)(config, path, v);
+                (0, lodash_set_1.default)(config, path, v);
             }
         }
         catch (e) {

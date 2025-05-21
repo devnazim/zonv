@@ -1,10 +1,11 @@
 # Zonv
 
-Zonv is a package that enables you to validate your application configuration using Zod schemas. It supports multiple configuration sources, including json files and environment variables, with environment variables taking precedence.
+Zonv is a package that enables you to validate your application configuration using Zod schemas. It supports multiple configuration sources, including json files and environment variables, with environment variables taking precedence and allow you to use complex nested data for your configuration.
 
 ## Features
 
 - **Zod Schema Validation**: Define and validate your configuration with [Zod](https://github.com/colinhacks/zod) schemas.
+- **Complex Configurations**: Use complex nesed data as configuration.
 - **Multiple Sources**: Use files and environment variables as configuration sources.
 - **Override Priority**: Environment variables override values specified in config files.
 - **Isolated configuration for each developer**: Use default config/config.json file as your personal config and add it to gitignore. Use config/example.config.json as an example for other devs.
@@ -31,23 +32,6 @@ pnpm add zonv
 
 ## Usage
 
-### Project structure example:
-
-```plaintext
-project/
-├── config/
-│   ├── production.config.json
-│   ├── staging.config.json
-│   ├── example.config.json
-│   └── config.json
-├── secrets/
-│   ├── example.secrets.json
-│   └── secrets.json
-├── config.ts
-├── .gitignore
-└── tsconfig.json
-```
-
 ### Basic Example
 
 1. Define your configuration schema using Zod.
@@ -72,6 +56,27 @@ const config = getConfig({
 
 export { config };
 ```
+
+
+### Project structure example:
+
+```plaintext
+project/
+├── config/
+│   ├── production.config.json
+│   ├── staging.config.json
+│   ├── example.config.json
+│   └── config.json
+├── secrets/
+│   ├── example.secrets.json # only for configuration demo
+│   └── secrets.json # add to .gitignore
+├── config.ts
+├── .gitignore
+└── tsconfig.json
+```
+
+> ℹ️ It is also possible to use environment variables
+
 
 ### Configuration Sources
 

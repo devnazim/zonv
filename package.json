@@ -1,6 +1,6 @@
 {
   "name": "zonv",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "configure your env with zod validation schema",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,7 +24,9 @@
   "license": "BSD-2-Clause",
   "devDependencies": {
     "@eslint/js": "^9.20.0",
-    "@types/lodash": "^4.17.15",
+    "@types/lodash.get": "^4.4.9",
+    "@types/lodash.merge": "^4.6.9",
+    "@types/lodash.set": "^4.3.9",
     "@types/node": "^22.13.1",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.0.1",
@@ -34,9 +36,11 @@
     "typescript-eslint": "^8.23.0"
   },
   "peerDependencies": {
-    "zod": "^3.24.1"
+    "zod": "3.25.13"
   },
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash.get": "^4.4.2",
+    "lodash.merge": "^4.6.2",
+    "lodash.set": "^4.3.2"
   }
 }
