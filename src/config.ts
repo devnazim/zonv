@@ -79,7 +79,8 @@ export const getConfig = <S extends ZodObjectType>({
   const propertiesPaths = getPropertiesPathsFromSchema(schema);
   for (const path of propertiesPaths) {
     try {
-      const envValue = process.env[path.split('.').join('_')];
+      const envValue = process.env[path.split('.').join('___')];
+      console.log('env key: ', path.split('.').join('___'), ' value: ', envValue);
       if (envValue) {
         const schemaProp = get(schema.shape, path);
         const v = schemaProp instanceof ZodObject || schemaProp instanceof ZodArray ? JSON.parse(envValue) : envValue;
@@ -91,3 +92,22 @@ export const getConfig = <S extends ZodObjectType>({
   }
   return schema.parse(config) as z.infer<S>;
 };
+
+export const getConfigFromEnv = <S extends ZodObjectType>({ schema }: { schema: S }) => {
+  const config = {};
+  const propertiesPaths = getPropertiesPathsFromSchema(schema);
+  for (const path of propertiesPaths) {
+    try {
+      const envValue = process.env[path.split('.').join('___')];
+      console.log('env key: ', path.split('.').join('___'), ' value: ', envValue);
+      if (envValue) {
+        const schemaProp = get(schema.shape, path);
+        const v = schemaProp instanceof ZodObject || schemaProp instanceof ZodArray ? JSON.parse(envValue) : envValue;
+        set(config, path, v);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  return schema.parse(config) as z.infer<S>;
+}

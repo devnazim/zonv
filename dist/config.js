@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getConfig = exports.getPaths = void 0;
+exports.getConfigFromEnv = exports.getConfig = exports.getPaths = void 0;
 const node_path_1 = require("node:path");
 const node_process_1 = require("node:process");
 const node_fs_1 = require("node:fs");
@@ -73,7 +73,8 @@ const getConfig = ({ schema, configPath, secretsPath, env, }) => {
     const propertiesPaths = getPropertiesPathsFromSchema(schema);
     for (const path of propertiesPaths) {
         try {
-            const envValue = process.env[path.split('.').join('_')];
+            const envValue = process.env[path.split('.').join('___')];
+            console.log('env key: ', path.split('.').join('___'), ' value: ', envValue);
             if (envValue) {
                 const schemaProp = (0, lodash_get_1.default)(schema.shape, path);
                 const v = schemaProp instanceof zod_1.ZodObject || schemaProp instanceof zod_1.ZodArray ? JSON.parse(envValue) : envValue;
@@ -87,3 +88,23 @@ const getConfig = ({ schema, configPath, secretsPath, env, }) => {
     return schema.parse(config);
 };
 exports.getConfig = getConfig;
+const getConfigFromEnv = ({ schema }) => {
+    const config = {};
+    const propertiesPaths = getPropertiesPathsFromSchema(schema);
+    for (const path of propertiesPaths) {
+        try {
+            const envValue = process.env[path.split('.').join('___')];
+            console.log('env key: ', path.split('.').join('___'), ' value: ', envValue);
+            if (envValue) {
+                const schemaProp = (0, lodash_get_1.default)(schema.shape, path);
+                const v = schemaProp instanceof zod_1.ZodObject || schemaProp instanceof zod_1.ZodArray ? JSON.parse(envValue) : envValue;
+                (0, lodash_set_1.default)(config, path, v);
+            }
+        }
+        catch (e) {
+            console.error(e);
+        }
+    }
+    return schema.parse(config);
+};
+exports.getConfigFromEnv = getConfigFromEnv;

@@ -159,10 +159,11 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             const path = './tmp/test/config.json';
             const data = { name: 'foo', birthYear: 2000, nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
             const nestedBar = 'foo';
-            process.env['nested_bar'] = nestedBar;
+            process.env['nested___bar'] = nestedBar;
             const { cleanup } = yield createConfigFiles([{ path, data }]);
             try {
                 const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
+                console.log('config: ', config);
                 node_assert_1.default.equal(config.nested.bar, nestedBar);
             }
             catch (e) {
@@ -170,7 +171,7 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
             }
             finally {
                 yield cleanup();
-                delete process.env['nested_bar'];
+                delete process.env['nested___bar'];
             }
         }));
         (0, node_test_1.it)('override object', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -272,5 +273,32 @@ const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function*
                 yield cleanup();
             }
         }));
+    });
+    (0, node_test_1.describe)('getConfigFromEnv', () => {
+        (0, node_test_1.it)('get config from env', () => {
+            const envVariables = [{ key: 'FOO', value: 'foo' }, { key: 'BAR', value: 'bar' }, { key: 'NESTED___BAZ', value: 'baz' }];
+            for (const envVariable of envVariables) {
+                process.env[envVariable.key] = envVariable.value;
+            }
+            try {
+                const schema = zod_1.z.object({
+                    FOO: zod_1.z.string(),
+                    BAR: zod_1.z.string().optional(),
+                    NESTED: zod_1.z.object({ BAZ: zod_1.z.string() }),
+                });
+                const config = (0, config_js_1.getConfigFromEnv)({ schema });
+                console.log('config: ', config);
+                node_assert_1.default.equal(config.FOO, 'foo');
+                node_assert_1.default.equal(config.NESTED.BAZ, 'baz');
+            }
+            catch (e) {
+                throw e;
+            }
+            finally {
+                for (const envVariable of envVariables) {
+                    delete process.env[envVariable.key];
+                }
+            }
+        });
     });
 });

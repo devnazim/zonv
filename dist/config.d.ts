@@ -11,5 +11,8 @@ export declare const getConfig: <S extends ZodObjectType>({ schema, configPath, 
     secretsPath?: string | string[];
     env?: string;
 }) => z.infer<S>;
+export declare const getConfigFromEnv: <S extends ZodObjectType>({ schema }: {
+    schema: S;
+}) => z.infer<S>;
 export {};
 //# sourceMappingURL=config.d.ts.map

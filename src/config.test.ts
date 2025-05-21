@@ -7,7 +7,7 @@ import { dirname, sep, resolve } from 'node:path';
 import { z } from 'zod';
 import merge from 'lodash.merge';
 
-import { getConfig, getPaths } from './config.js';
+import { getConfig, getPaths, getConfigFromEnv } from './config.js';
 
 const createConfigFiles = async (files: { path: string; data: any }[]) => {
   const dirToDelete: string[] = [];
@@ -143,16 +143,17 @@ describe('getConfig', () => {
       const path = './tmp/test/config.json';
       const data = { name: 'foo', birthYear: 2000, nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
       const nestedBar = 'foo';
-      process.env['nested_bar'] = nestedBar;
+      process.env['nested___bar'] = nestedBar;
       const { cleanup } = await createConfigFiles([{ path, data }]);
       try {
         const config = await getConfig({ schema, configPath: [path] });
+        console.log('config: ', config);
         assert.equal(config.nested.bar, nestedBar);
       } catch (e) {
         throw e;
       } finally {
         await cleanup();
-        delete process.env['nested_bar'];
+        delete process.env['nested___bar'];
       }
     });
     it('override object', async () => {
@@ -246,4 +247,30 @@ describe('getConfig', () => {
       }
     });
   });
+
+  describe('getConfigFromEnv', () => {
+    it('get config from env', () => {
+      const envVariables = [{ key: 'FOO', value: 'foo' }, { key: 'BAR', value: 'bar' }, { key: 'NESTED___BAZ', value: 'baz'}]
+      for (const envVariable of envVariables) {
+        process.env[envVariable.key] = envVariable.value;
+      }
+      try {
+        const schema = z.object({
+          FOO: z.string(),
+          BAR: z.string().optional(),
+          NESTED: z.object({ BAZ: z.string() }),
+        });
+        const config = getConfigFromEnv({ schema });
+        console.log('config: ', config);
+        assert.equal(config.FOO, 'foo');
+        assert.equal(config.NESTED.BAZ, 'baz');
+      } catch (e) {
+        throw e;
+      } finally {
+        for (const envVariable of envVariables) {
+          delete process.env[envVariable.key];
+        }
+      }
+    })
+  })
 });

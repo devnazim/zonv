@@ -1,1 +1,1 @@
-export { getConfig } from './config.js';
+export { getConfig, getConfigFromEnv } from './config.js';

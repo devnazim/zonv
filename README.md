@@ -152,7 +152,7 @@ Override OR define configuration using environment variables:
 PORT=4000 DATABASE_URL=https://new-db.example.com node app.js
 ```
 
-OR use env package.
+OR use env package e.g. dotenv.
 
 ### Merging and Precedence
 
@@ -249,7 +249,7 @@ const nestedSchema = z.object({
   }),
 });
 
-process.env['server_port'] = 7000; // Use "_" symbol to name environment variable in order to override OR define nested property.
+process.env['server___port'] = 7000; // Use triple "_" symbol to name environment variable in order to override OR define nested property.
 
 const config = getConfig({ schema: nestedSchema });
 
