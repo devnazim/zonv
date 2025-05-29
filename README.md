@@ -45,18 +45,39 @@ import { getConfig } from 'zonv';
 // Define your configuration schema
 const configSchema = z.object({
   PORT: z.number().default(3000),
-  DATABASE_URL: z.string().url()
+  DATABASE_URL: z.string().url(),
 });
 
 // Load and validate your configuration from config folder
 const config = getConfig({
   schema: configSchema,
-  env: process.env.APP_ENV // optional. Determine file to get config from (config/{env}.config.json).
+  env: process.env.APP_ENV, // optional. Determine file to get config from (config/{env}.config.json).
 });
 
 export { config };
 ```
 
+### Support zod/v4
+
+```typescript
+// config.ts
+import { z } from 'zod/v4';
+import { getConfig } from 'zonv/v4';
+
+// Define your configuration schema
+const configSchema = z.object({
+  PORT: z.number().default(3000),
+  DATABASE_URL: z.string().url(),
+});
+
+// Load and validate your configuration from config folder
+const config = getConfig({
+  schema: configSchema,
+  env: process.env.APP_ENV, // optional. Determine file to get config from (config/{env}.config.json).
+});
+
+export { config };
+```
 
 ### Project structure example:
 
@@ -77,6 +98,47 @@ project/
 
 > ℹ️ It is also possible to use environment variables
 
+### Use environment variables ONLY
+
+In some cases files are not available e.g. react native setup.
+
+```typescript
+// config.ts
+import { z } from 'zod';
+import { getConfig } from 'zonv';
+import { getConfigFromEnv } from 'zonv/env-config';
+
+// Define your configuration schema
+const configSchema = z.object({
+  PORT: z.number().default(3000),
+  API_BASE_URL: z.string().url(),
+});
+
+// Load configuration using env variables
+const config = getConfigFromEnv({ schema: configSchema });
+
+export { config };
+```
+
+### Support zod/v4
+
+```typescript
+// config.ts
+import { z } from 'zod/v4';
+import { getConfig } from 'zonv/v4';
+import { getConfigFromEnv } from 'zonv/v4/env-config';
+
+// Define your configuration schema
+const configSchema = z.object({
+  PORT: z.number().default(3000),
+  API_BASE_URL: z.string().url(),
+});
+
+// Load configuration using env variables
+const config = getConfigFromEnv({ schema: configSchema });
+
+export { config };
+```
 
 ### Configuration Sources
 
@@ -191,7 +253,7 @@ Override default config file paths.
 const config = getConfig({
   schema: configSchema,
   configPaths: './path/config.json',
-  secretsPaths: './path/secrets.json'
+  secretsPaths: './path/secrets.json',
 });
 ```
 
@@ -201,7 +263,7 @@ Use multiple config source files.
 const config = getConfig({
   schema: configSchema,
   configPaths: ['./path/config1.json', './path/config2.json'],
-  secretsPaths: ['./path/secrets1.json', './path/secrets2.json']
+  secretsPaths: ['./path/secrets1.json', './path/secrets2.json'],
 });
 ```
 
@@ -222,11 +284,11 @@ Handle nested configurations and default values:
 const nestedSchema = z.object({
   server: z.object({
     host: z.string().default('localhost'),
-    port: z.number().default(3000)
+    port: z.number().default(3000),
   }),
   database: z.object({
     url: z.string().url(),
-    poolSize: z.number().default(10)
+    poolSize: z.number().default(10),
   }),
 });
 
@@ -241,11 +303,11 @@ Override nested values with environment variable
 const nestedSchema = z.object({
   server: z.object({
     host: z.string().default('localhost'),
-    port: z.number().default(3000)
+    port: z.number().default(3000),
   }),
   database: z.object({
     url: z.string().url(),
-    poolSize: z.number().default(10)
+    poolSize: z.number().default(10),
   }),
 });
 
@@ -253,7 +315,7 @@ process.env['server___port'] = 7000; // Use triple "_" symbol to name environmen
 
 const config = getConfig({ schema: nestedSchema });
 
-console.log(config.server.port) // 7000
+console.log(config.server.port); // 7000
 
 export { config };
 ```
