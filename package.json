@@ -1,16 +1,32 @@
 {
   "name": "zonv",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "configure your env with zod validation schema",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/config.js",
+      "types": "./dist/config.test.d.ts"
+    },
+    "./env-config": {
+      "import": "./dist/env-config.js",
+      "types": "./dist/env-config.d.ts"
+    },
+    "./v4": {
+      "import": "./dist/config-v4.js",
+      "types": "./dist/config-v4.d.ts"
+    },
+    "./v4/env-config": {
+      "import": "./dist/env-config-v4.js",
+      "types": "./dist/env-config-v4.d.ts"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/devnazim/zonv"
   },
   "scripts": {
-    "test": "npm run build && node --test ./dist/*.test.js",
-    "build": "rm -rf ./dist && tsc -b"
+    "test": "npm run build && node --test-concurrency 1 --test ./dist/*.test.js ./dist/**/*.test.js ",
+    "build": "rm -rf ./dist && tsc -p tsconfig.json"
   },
   "keywords": [
     "config",
@@ -24,7 +40,6 @@
   "license": "BSD-2-Clause",
   "devDependencies": {
     "@eslint/js": "^9.20.0",
-    "@types/lodash.get": "^4.4.9",
     "@types/lodash.merge": "^4.6.9",
     "@types/lodash.set": "^4.3.9",
     "@types/node": "^22.13.1",
@@ -39,7 +54,6 @@
     "zod": "^3.24.1"
   },
   "dependencies": {
-    "lodash.get": "^4.4.2",
     "lodash.merge": "^4.6.2",
     "lodash.set": "^4.3.2"
   }

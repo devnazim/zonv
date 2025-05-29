@@ -1,28 +1,11 @@
 import { z, ZodArray, ZodObject, SomeZodObject } from 'zod';
-import merge from 'lodash.merge';
 import set from 'lodash.set';
 
-import { getPaths } from './utils/getPaths';
-import { getFileContent } from './utils/getFileContent';
 import { getPropertiesPathsFromSchema } from './utils/getPropertiesPathsFromSchema.js';
 import { get } from './utils/get';
 
-export const getConfig = <S extends SomeZodObject>({
-  schema,
-  configPath,
-  secretsPath,
-  env,
-}: {
-  schema: S;
-  configPath?: string | string[];
-  secretsPath?: string | string[];
-  env?: string;
-}) => {
+export const getConfigFromEnv = <S extends SomeZodObject>({ schema }: { schema: S }) => {
   const config = {};
-  const filePaths = [...getPaths({ type: 'config', path: configPath, env }), ...getPaths({ type: 'secrets', path: secretsPath, env })];
-  for (const path of filePaths) {
-    merge(config, getFileContent(path));
-  }
   const propertiesPaths = getPropertiesPathsFromSchema(schema);
   for (const path of propertiesPaths) {
     try {

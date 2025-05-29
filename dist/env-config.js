@@ -3,20 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getConfig = void 0;
+exports.getConfigFromEnv = void 0;
 const zod_1 = require("zod");
-const lodash_merge_1 = __importDefault(require("lodash.merge"));
 const lodash_set_1 = __importDefault(require("lodash.set"));
-const getPaths_1 = require("./utils/getPaths");
-const getFileContent_1 = require("./utils/getFileContent");
 const getPropertiesPathsFromSchema_js_1 = require("./utils/getPropertiesPathsFromSchema.js");
 const get_1 = require("./utils/get");
-const getConfig = ({ schema, configPath, secretsPath, env, }) => {
+const getConfigFromEnv = ({ schema }) => {
     const config = {};
-    const filePaths = [...(0, getPaths_1.getPaths)({ type: 'config', path: configPath, env }), ...(0, getPaths_1.getPaths)({ type: 'secrets', path: secretsPath, env })];
-    for (const path of filePaths) {
-        (0, lodash_merge_1.default)(config, (0, getFileContent_1.getFileContent)(path));
-    }
     const propertiesPaths = (0, getPropertiesPathsFromSchema_js_1.getPropertiesPathsFromSchema)(schema);
     for (const path of propertiesPaths) {
         try {
@@ -33,4 +26,4 @@ const getConfig = ({ schema, configPath, secretsPath, env, }) => {
     }
     return schema.parse(config);
 };
-exports.getConfig = getConfig;
+exports.getConfigFromEnv = getConfigFromEnv;

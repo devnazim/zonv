@@ -12,64 +12,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createConfigFiles = void 0;
 const node_assert_1 = __importDefault(require("node:assert"));
 const node_test_1 = require("node:test");
-const promises_1 = require("node:fs/promises");
-const node_fs_1 = require("node:fs");
-const node_path_1 = require("node:path");
-const zod_1 = require("zod");
+const v4_1 = require("zod/v4");
 const lodash_merge_1 = __importDefault(require("lodash.merge"));
-const config_js_1 = require("./config.js");
-const env_config_js_1 = require("./env-config.js");
-const createConfigFiles = (files) => __awaiter(void 0, void 0, void 0, function* () {
-    const dirToDelete = [];
-    for (const file of files) {
-        const dir = (0, node_path_1.dirname)(file.path);
-        const paths = dir.split(node_path_1.sep);
-        const nestedPaths = [];
-        let currentPath = [];
-        for (const path of paths) {
-            currentPath.push(path);
-            const currentDir = currentPath.join(node_path_1.sep);
-            if ((0, node_fs_1.existsSync)(currentDir) === false) {
-                nestedPaths.push(currentDir);
-                yield (0, promises_1.mkdir)(currentDir);
-            }
-        }
-        dirToDelete.push(...nestedPaths.reverse());
-        yield (0, promises_1.writeFile)(file.path, JSON.stringify(file.data, null, 2));
-    }
-    return {
-        cleanup: () => __awaiter(void 0, void 0, void 0, function* () {
-            for (const file of files) {
-                if ((0, node_fs_1.existsSync)(file.path)) {
-                    yield (0, promises_1.unlink)(file.path);
-                }
-            }
-            for (const dir of dirToDelete) {
-                if ((0, node_fs_1.existsSync)(dir)) {
-                    yield (0, promises_1.rm)(dir, { recursive: true });
-                }
-            }
-        }),
-    };
-});
-exports.createConfigFiles = createConfigFiles;
-(0, node_test_1.describe)('getConfig', { concurrency: false }, () => {
+const config_v4_js_1 = require("./config-v4.js");
+const env_config_v4_js_1 = require("./env-config-v4.js");
+const config_test_js_1 = require("./config.test.js");
+(0, node_test_1.describe)('getConfig with zod/v4', { concurrency: false }, () => {
     (0, node_test_1.describe)('validate schema without secrets', () => {
-        const schema = zod_1.z.object({
-            name: zod_1.z.string(),
-            birthYear: zod_1.z.number().optional(),
-            nested: zod_1.z.object({ foo: zod_1.z.number(), bar: zod_1.z.string(), baz: zod_1.z.array(zod_1.z.number()) }),
-            arr: zod_1.z.array(zod_1.z.object({ id: zod_1.z.coerce.number(), val: zod_1.z.coerce.string() })),
+        const schema = v4_1.z.object({
+            name: v4_1.z.string(),
+            birthYear: v4_1.z.number().optional(),
+            nested: v4_1.z.object({ foo: v4_1.z.number(), bar: v4_1.z.string(), baz: v4_1.z.array(v4_1.z.number()) }),
+            arr: v4_1.z.array(v4_1.z.object({ id: v4_1.z.coerce.number(), val: v4_1.z.coerce.string() })),
         });
         (0, node_test_1.it)('valid data', () => __awaiter(void 0, void 0, void 0, function* () {
             const path = './tmp/test/config.json';
             const data = { name: 'foo', birthYear: 2000, nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
-            const { cleanup } = yield (0, exports.createConfigFiles)([{ path, data }]);
+            const { cleanup } = yield (0, config_test_js_1.createConfigFiles)([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
+                const config = yield (0, config_v4_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.deepEqual(data, config);
             }
             catch (e) {
@@ -82,9 +45,9 @@ exports.createConfigFiles = createConfigFiles;
         (0, node_test_1.it)('valid data without optional fields', () => __awaiter(void 0, void 0, void 0, function* () {
             const path = './tmp/test/config.json';
             const data = { name: 'foo', nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
-            const { cleanup } = yield (0, exports.createConfigFiles)([{ path, data }]);
+            const { cleanup } = yield (0, config_test_js_1.createConfigFiles)([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
+                const config = yield (0, config_v4_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.deepEqual(data, config);
             }
             catch (e) {
@@ -97,9 +60,9 @@ exports.createConfigFiles = createConfigFiles;
         (0, node_test_1.it)('convert values type', () => __awaiter(void 0, void 0, void 0, function* () {
             const path = './tmp/test/config.json';
             const data = { name: 'foo', nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: '1', val: 123 }] };
-            const { cleanup } = yield (0, exports.createConfigFiles)([{ path, data }]);
+            const { cleanup } = yield (0, config_test_js_1.createConfigFiles)([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
+                const config = yield (0, config_v4_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.deepEqual(config.arr, data.arr.map(({ id, val }) => ({ id: Number(id), val: String(val) })));
             }
             catch (e) {
@@ -114,9 +77,9 @@ exports.createConfigFiles = createConfigFiles;
             const data = { name: 'foo', birthYear: 2000, nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
             const overrideName = 'bar';
             process.env.name = overrideName;
-            const { cleanup } = yield (0, exports.createConfigFiles)([{ path, data }]);
+            const { cleanup } = yield (0, config_test_js_1.createConfigFiles)([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
+                const config = yield (0, config_v4_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.equal(config.name, overrideName);
             }
             catch (e) {
@@ -132,9 +95,9 @@ exports.createConfigFiles = createConfigFiles;
             const data = { name: 'foo', birthYear: 2000, nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
             const nestedBar = 'foo';
             process.env['nested___bar'] = nestedBar;
-            const { cleanup } = yield (0, exports.createConfigFiles)([{ path, data }]);
+            const { cleanup } = yield (0, config_test_js_1.createConfigFiles)([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
+                const config = yield (0, config_v4_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.equal(config.nested.bar, nestedBar);
             }
             catch (e) {
@@ -150,9 +113,9 @@ exports.createConfigFiles = createConfigFiles;
             const data = { name: 'foo', birthYear: 2000, nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
             const nested = { foo: 2, bar: 'xys', baz: [5, 6, 7] };
             process.env.nested = JSON.stringify(nested);
-            const { cleanup } = yield (0, exports.createConfigFiles)([{ path, data }]);
+            const { cleanup } = yield (0, config_test_js_1.createConfigFiles)([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
+                const config = yield (0, config_v4_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.deepEqual(config.nested, nested);
             }
             catch (e) {
@@ -171,9 +134,9 @@ exports.createConfigFiles = createConfigFiles;
                 { id: 20, val: 'xyz' },
             ];
             process.env.arr = JSON.stringify(arr);
-            const { cleanup } = yield (0, exports.createConfigFiles)([{ path, data }]);
+            const { cleanup } = yield (0, config_test_js_1.createConfigFiles)([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
+                const config = yield (0, config_v4_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.deepEqual(config.arr, arr);
             }
             catch (e) {
@@ -189,9 +152,9 @@ exports.createConfigFiles = createConfigFiles;
             const data = { birthYear: 2000, nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
             const overrideName = 'bar';
             process.env.name = overrideName;
-            const { cleanup } = yield (0, exports.createConfigFiles)([{ path, data }]);
+            const { cleanup } = yield (0, config_test_js_1.createConfigFiles)([{ path, data }]);
             try {
-                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path] });
+                const config = yield (0, config_v4_js_1.getConfig)({ schema, configPath: [path] });
                 node_assert_1.default.equal(config.name, overrideName);
             }
             catch (e) {
@@ -207,10 +170,10 @@ exports.createConfigFiles = createConfigFiles;
             const data1 = { name: 'foo', birthYear: 2000 };
             const path2 = './tmp/test/config2.json';
             const data2 = { nested: { foo: 1, bar: 'abcd', baz: [1, 2, 3] }, arr: [{ id: 1, val: 'foo' }] };
-            const { cleanup: cleanup1 } = yield (0, exports.createConfigFiles)([{ path: path1, data: data1 }]);
-            const { cleanup: cleanup2 } = yield (0, exports.createConfigFiles)([{ path: path2, data: data2 }]);
+            const { cleanup: cleanup1 } = yield (0, config_test_js_1.createConfigFiles)([{ path: path1, data: data1 }]);
+            const { cleanup: cleanup2 } = yield (0, config_test_js_1.createConfigFiles)([{ path: path2, data: data2 }]);
             try {
-                const config = yield (0, config_js_1.getConfig)({ schema, configPath: [path1, path2] });
+                const config = yield (0, config_v4_js_1.getConfig)({ schema, configPath: [path1, path2] });
                 node_assert_1.default.deepEqual((0, lodash_merge_1.default)(data1, data2), config);
             }
             catch (e) {
@@ -223,18 +186,18 @@ exports.createConfigFiles = createConfigFiles;
         }));
     });
     (0, node_test_1.describe)('validate schema with secrets', () => {
-        const schema = zod_1.z.object({ zone: zod_1.z.string(), API_KEY: zod_1.z.string() });
+        const schema = v4_1.z.object({ zone: v4_1.z.string(), API_KEY: v4_1.z.string() });
         (0, node_test_1.it)('valid data', () => __awaiter(void 0, void 0, void 0, function* () {
             const configPath = './tmp/test/config.json';
             const secretsPath = './tmp/test/secret.json';
             const configData = { zone: 'us' };
             const secretsData = { API_KEY: 'abcd' };
-            const { cleanup } = yield (0, exports.createConfigFiles)([
+            const { cleanup } = yield (0, config_test_js_1.createConfigFiles)([
                 { path: configPath, data: configData },
                 { path: secretsPath, data: secretsData },
             ]);
             try {
-                const config = yield (0, config_js_1.getConfig)({ schema, configPath, secretsPath });
+                const config = yield (0, config_v4_js_1.getConfig)({ schema, configPath, secretsPath });
                 node_assert_1.default.deepEqual((0, lodash_merge_1.default)(configData, secretsData), config);
             }
             catch (e) {
@@ -256,12 +219,12 @@ exports.createConfigFiles = createConfigFiles;
                 process.env[envVariable.key] = envVariable.value;
             }
             try {
-                const schema = zod_1.z.object({
-                    FOO: zod_1.z.string(),
-                    BAR: zod_1.z.string().optional(),
-                    NESTED: zod_1.z.object({ BAZ: zod_1.z.string() }),
+                const schema = v4_1.z.object({
+                    FOO: v4_1.z.string(),
+                    BAR: v4_1.z.string().optional(),
+                    NESTED: v4_1.z.object({ BAZ: v4_1.z.string() }),
                 });
-                const config = (0, env_config_js_1.getConfigFromEnv)({ schema });
+                const config = (0, env_config_v4_js_1.getConfigFromEnv)({ schema });
                 node_assert_1.default.equal(config.FOO, 'foo');
                 node_assert_1.default.equal(config.NESTED.BAZ, 'baz');
             }
