@@ -5,4 +5,3 @@ export declare const getConfig: <S extends ZodObject>({ schema, configPath, secr
     secretsPath?: string | string[];
     env?: string;
 }) => z.infer<S>;
-//# sourceMappingURL=config-v4.d.ts.map

@@ -4,4 +4,3 @@ export declare const createConfigFiles: (files: {
 }[]) => Promise<{
     cleanup: () => Promise<void>;
 }>;
-//# sourceMappingURL=config.test.d.ts.map
