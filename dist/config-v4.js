@@ -4,12 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getConfig = void 0;
-const zod_1 = require("zod");
+const v4_1 = require("zod/v4");
 const lodash_merge_1 = __importDefault(require("lodash.merge"));
 const lodash_set_1 = __importDefault(require("lodash.set"));
 const getPaths_1 = require("./utils/getPaths");
 const getFileContent_1 = require("./utils/getFileContent");
-const getPropertiesPathsFromSchema_js_1 = require("./utils/getPropertiesPathsFromSchema.js");
+const getPropertiesPathsFromSchema_v4_1 = require("./utils/getPropertiesPathsFromSchema-v4");
 const get_1 = require("./utils/get");
 const getConfig = ({ schema, configPath, secretsPath, env, }) => {
     const config = {};
@@ -17,13 +17,13 @@ const getConfig = ({ schema, configPath, secretsPath, env, }) => {
     for (const path of filePaths) {
         (0, lodash_merge_1.default)(config, (0, getFileContent_1.getFileContent)(path));
     }
-    const propertiesPaths = (0, getPropertiesPathsFromSchema_js_1.getPropertiesPathsFromSchema)(schema);
+    const propertiesPaths = (0, getPropertiesPathsFromSchema_v4_1.getPropertiesPathsFromSchema)(schema);
     for (const path of propertiesPaths) {
         try {
             const envValue = process.env[path.split('.').join('___')];
             if (envValue) {
                 const schemaProp = (0, get_1.get)(schema.shape, path);
-                const v = schemaProp instanceof zod_1.ZodObject || schemaProp instanceof zod_1.ZodArray ? JSON.parse(envValue) : envValue;
+                const v = schemaProp instanceof v4_1.ZodObject || schemaProp instanceof v4_1.ZodArray ? JSON.parse(envValue) : envValue;
                 (0, lodash_set_1.default)(config, path, v);
             }
         }

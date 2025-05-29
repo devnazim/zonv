@@ -1,49 +1,13 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { writeFile, unlink, mkdir, rm } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
-import { dirname, sep } from 'node:path';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import merge from 'lodash.merge';
 
-import { getConfig } from './config.js';
-import { getConfigFromEnv } from './env-config.js';
+import { getConfig } from './config-v4.js';
+import { getConfigFromEnv } from './env-config-v4.js';
+import { createConfigFiles } from './config.test.js';
 
-export const createConfigFiles = async (files: { path: string; data: any }[]) => {
-  const dirToDelete: string[] = [];
-  for (const file of files) {
-    const dir = dirname(file.path);
-    const paths = dir.split(sep);
-    const nestedPaths = [];
-    let currentPath: string[] = [];
-    for (const path of paths) {
-      currentPath.push(path);
-      const currentDir = currentPath.join(sep);
-      if (existsSync(currentDir) === false) {
-        nestedPaths.push(currentDir);
-        await mkdir(currentDir);
-      }
-    }
-    dirToDelete.push(...nestedPaths.reverse());
-    await writeFile(file.path, JSON.stringify(file.data, null, 2));
-  }
-  return {
-    cleanup: async () => {
-      for (const file of files) {
-        if (existsSync(file.path)) {
-          await unlink(file.path);
-        }
-      }
-      for (const dir of dirToDelete) {
-        if (existsSync(dir)) {
-          await rm(dir, { recursive: true });
-        }
-      }
-    },
-  };
-};
-
-describe('getConfig', { concurrency: false }, () => {
+describe('getConfig with zod/v4', { concurrency: false }, () => {
   describe('validate schema without secrets', () => {
     const schema = z.object({
       name: z.string(),
