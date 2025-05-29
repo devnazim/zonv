@@ -40,7 +40,6 @@
   "license": "BSD-2-Clause",
   "devDependencies": {
     "@eslint/js": "^9.20.0",
-    "@types/lodash.get": "^4.4.9",
     "@types/lodash.merge": "^4.6.9",
     "@types/lodash.set": "^4.3.9",
     "@types/node": "^22.13.1",
@@ -55,7 +54,6 @@
     "zod": "^3.24.1"
   },
   "dependencies": {
-    "lodash.get": "^4.4.2",
     "lodash.merge": "^4.6.2",
     "lodash.set": "^4.3.2"
   }
