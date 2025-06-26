@@ -1,6 +1,6 @@
 import { z, ZodArray, ZodObject, SomeZodObject } from 'zod';
 import merge from 'lodash.merge';
-import set from 'lodash.set';
+import { dset } from 'dset';
 
 import { getPaths } from './utils/getPaths';
 import { getFileContent } from './utils/getFileContent';
@@ -30,7 +30,7 @@ export const getConfig = <S extends SomeZodObject>({
       if (envValue) {
         const schemaProp = get(schema.shape, path);
         const v = schemaProp instanceof ZodObject || schemaProp instanceof ZodArray ? JSON.parse(envValue) : envValue;
-        set(config, path, v);
+        dset(config, path, v);
       }
     } catch (e) {
       console.error(e);

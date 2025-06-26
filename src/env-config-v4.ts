@@ -1,5 +1,5 @@
 import { z, ZodArray, ZodObject } from 'zod/v4';
-import set from 'lodash.set';
+import { dset } from 'dset';
 
 import { getPropertiesPathsFromSchema } from './utils/getPropertiesPathsFromSchema-v4';
 import { get } from './utils/get';
@@ -13,7 +13,7 @@ export const getConfigFromEnv = <S extends ZodObject>({ schema }: { schema: S })
       if (envValue) {
         const schemaProp = get(schema.shape, path);
         const v = schemaProp instanceof ZodObject || schemaProp instanceof ZodArray ? JSON.parse(envValue) : envValue;
-        set(config, path, v);
+        dset(config, path, v);
       }
     } catch (e) {
       console.error(e);
