@@ -57,12 +57,12 @@ const config = getConfig({
 export { config };
 ```
 
-### Support zod/v4
+### Support zod/v3
 
 ```typescript
 // config.ts
-import { z } from 'zod/v4';
-import { getConfig } from 'zonv/v4';
+import { z } from 'zod/v3';
+import { getConfig } from 'zonv/v3';
 
 // Define your configuration schema
 const configSchema = z.object({
@@ -120,13 +120,13 @@ const config = getConfigFromEnv({ schema: configSchema });
 export { config };
 ```
 
-### Support zod/v4
+### Support zod/v3
 
 ```typescript
 // config.ts
-import { z } from 'zod/v4';
-import { getConfig } from 'zonv/v4';
-import { getConfigFromEnv } from 'zonv/v4/env-config';
+import { z } from 'zod/v3';
+import { getConfig } from 'zonv/v3';
+import { getConfigFromEnv } from 'zonv/v3/env-config';
 
 // Define your configuration schema
 const configSchema = z.object({
@@ -228,13 +228,11 @@ Zonv automatically merges configuration sources, with environment variables taki
 
 - **`schema`** (Zod schema, required): The Zod schema used to validate your configuration.
 - **`configPaths`** JSON source file path(s). By default is `config/config.json`. Possible values:
-
   - relative or absolute path e.g. `/path/config.json` OR `./path/config.json`
   - array of config paths to merge e.g. `[/tmp/path/config1.json, /tmp/path/config2.json]`
   - string with config paths separated by comma e.g. `"/tmp/path/config1.json, /tmp/path/config2.json"`
 
 - **`secretsPaths`** JSON source file path(s). By default is `secrets/secrets.json`. Possible values:
-
   - relative or absolute path e.g. `/path/secrets.json` OR `./path/secrets.json`
   - array of config paths to merge e.g. `[/tmp/path/secrets1.json, /tmp/path/secrets2.json]`
   - string with config paths separated by comma e.g. `"/tmp/path/secrets1.json, /tmp/path/secrets2.json"`
