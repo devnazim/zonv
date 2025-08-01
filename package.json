@@ -1,31 +1,37 @@
 {
   "name": "zonv",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "configure your env with zod validation schema",
   "type": "module",
   "exports": {
     ".": {
       "import": "./dist/config-v4.js",
+      "require": "./dist/cjs/config-v4.js",
       "types": "./dist/config-v4.d.ts"
     },
     "./env-config": {
       "import": "./dist/env-config-v4.js",
+      "require": "./dist/cjs/env-config-v4.js",
       "types": "./dist/env-config-v4.d.ts"
     },
     "./v3": {
       "import": "./dist/config-v3.js",
+      "require": "./dist/cjs/config-v3.js",
       "types": "./dist/config-v3.d.ts"
     },
     "./v3/env-config": {
       "import": "./dist/env-config-v3.js",
+      "require": "./dist/cjs/env-config-v3.js",
       "types": "./dist/env-config-v3.d.ts"
     },
     "./v4": {
       "import": "./dist/config-v4.js",
+      "require": "./dist/cjs/config-v4.js",
       "types": "./dist/config-v4.d.ts"
     },
     "./v4/env-config": {
       "import": "./dist/env-config-v4.js",
+      "require": "./dist/cls/env-config-v4.js",
       "types": "./dist/env-config-v4.d.ts"
     }
   },
@@ -56,8 +62,10 @@
     "url": "https://github.com/devnazim/zonv"
   },
   "scripts": {
-    "test": "npm run build && node --test-concurrency 1 --test ./dist/*.test.js ./dist/**/*.test.js ",
-    "build": "rm -rf ./dist && tsc -p tsconfig.json"
+    "test": "rm -rf ./dist && npm run build:esm && node --test-concurrency 1 --test ./dist/*.test.js ./dist/**/*.test.js ",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build": "rm -rf ./dist && npm run build:cjs && npm run build:esm"
   },
   "keywords": [
     "config",
