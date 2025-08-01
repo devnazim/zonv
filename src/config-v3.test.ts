@@ -3,11 +3,11 @@ import { describe, it } from 'node:test';
 import { writeFile, unlink, mkdir, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, sep } from 'node:path';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import merge from 'lodash.merge';
 
-import { getConfig } from './config.js';
-import { getConfigFromEnv } from './env-config.js';
+import { getConfig } from './config-v3.js';
+import { getConfigFromEnv } from './env-config-v3.js';
 
 export const createConfigFiles = async (files: { path: string; data: any }[]) => {
   const dirToDelete: string[] = [];

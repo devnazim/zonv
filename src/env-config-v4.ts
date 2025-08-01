@@ -1,8 +1,8 @@
-import { z, ZodArray, ZodObject } from 'zod/v4';
+import { z, ZodArray, ZodObject } from 'zod';
 import { dset } from 'dset';
 
-import { getPropertiesPathsFromSchema } from './utils/getPropertiesPathsFromSchema-v4';
-import { get } from './utils/get';
+import { getPropertiesPathsFromSchema } from './utils/getPropertiesPathsFromSchema-v4.js';
+import { get } from './utils/get.js';
 
 export const getConfigFromEnv = <S extends ZodObject>({ schema }: { schema: S }) => {
   const config = {};

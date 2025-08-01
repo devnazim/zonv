@@ -1,11 +1,11 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import merge from 'lodash.merge';
 
 import { getConfig } from './config-v4.js';
 import { getConfigFromEnv } from './env-config-v4.js';
-import { createConfigFiles } from './config.test.js';
+import { createConfigFiles } from './config-v3.test.js';
 
 describe('getConfig with zod/v4', { concurrency: false }, () => {
   describe('validate schema without secrets', () => {

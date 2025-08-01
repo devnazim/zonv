@@ -1,4 +1,4 @@
-import { ZodObject } from 'zod/v4';
+import { ZodObject } from 'zod';
 
 export const getPropertiesPathsFromSchema = <S extends ZodObject>(schema: S) => {
   const paths: string[] = [];

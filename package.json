@@ -1,15 +1,24 @@
 {
   "name": "zonv",
-  "version": "1.1.3",
+  "version": "2.0.0",
   "description": "configure your env with zod validation schema",
+  "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/config.js",
-      "types": "./dist/config.test.d.ts"
+      "import": "./dist/config-v4.js",
+      "types": "./dist/config-v4.d.ts"
     },
     "./env-config": {
-      "import": "./dist/env-config.js",
-      "types": "./dist/env-config.d.ts"
+      "import": "./dist/env-config-v4.js",
+      "types": "./dist/env-config-v4.d.ts"
+    },
+    "./v3": {
+      "import": "./dist/config-v3.js",
+      "types": "./dist/config-v3.d.ts"
+    },
+    "./v3/env-config": {
+      "import": "./dist/env-config-v3.js",
+      "types": "./dist/env-config-v3.d.ts"
     },
     "./v4": {
       "import": "./dist/config-v4.js",
@@ -18,6 +27,28 @@
     "./v4/env-config": {
       "import": "./dist/env-config-v4.js",
       "types": "./dist/env-config-v4.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/config-v4.d.ts"
+      ],
+      "env-config": [
+        "./dist/env-config-v4.d.ts"
+      ],
+      "v3": [
+        "./dist/config-v3.d.ts"
+      ],
+      "v3/env-config": [
+        "./dist/env-config-v3.d.ts"
+      ],
+      "v4": [
+        "./dist/config-v4.d.ts"
+      ],
+      "v4/env-config": [
+        "./dist/env-config-v4.d.ts"
+      ]
     }
   },
   "repository": {
@@ -50,7 +81,7 @@
     "typescript-eslint": "^8.23.0"
   },
   "peerDependencies": {
-    "zod": "^3.24.1"
+    "zod": "^4.0.14"
   },
   "dependencies": {
     "dset": "^3.1.4",

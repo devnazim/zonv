@@ -1,11 +1,11 @@
-import { z, ZodArray, ZodObject } from 'zod/v4';
+import { z, ZodArray, ZodObject } from 'zod';
 import merge from 'lodash.merge';
 import { dset } from 'dset';
 
-import { getPaths } from './utils/getPaths';
-import { getFileContent } from './utils/getFileContent';
-import { getPropertiesPathsFromSchema } from './utils/getPropertiesPathsFromSchema-v4';
-import { get } from './utils/get';
+import { getPaths } from './utils/getPaths.js';
+import { getFileContent } from './utils/getFileContent.js';
+import { getPropertiesPathsFromSchema } from './utils/getPropertiesPathsFromSchema-v4.js';
+import { get } from './utils/get.js';
 
 export const getConfig = <S extends ZodObject>({
   schema,
