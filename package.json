@@ -1,32 +1,32 @@
 {
   "name": "zonv",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "configure your env with zod validation schema",
   "type": "module",
   "exports": {
     ".": {
       "import": "./dist/config-v4.js",
-      "require": "./dist/cjs/config-v4.js",
+      "require": "./dist/cjs/config-v4.cjs",
       "types": "./dist/config-v4.d.ts"
     },
     "./env-config": {
       "import": "./dist/env-config-v4.js",
-      "require": "./dist/cjs/env-config-v4.js",
+      "require": "./dist/cjs/env-config-v4.cjs",
       "types": "./dist/env-config-v4.d.ts"
     },
     "./v3": {
       "import": "./dist/config-v3.js",
-      "require": "./dist/cjs/config-v3.js",
+      "require": "./dist/cjs/config-v3.cjs",
       "types": "./dist/config-v3.d.ts"
     },
     "./v3/env-config": {
       "import": "./dist/env-config-v3.js",
-      "require": "./dist/cjs/env-config-v3.js",
+      "require": "./dist/cjs/env-config-v3.cjs",
       "types": "./dist/env-config-v3.d.ts"
     },
     "./v4": {
       "import": "./dist/config-v4.js",
-      "require": "./dist/cjs/config-v4.js",
+      "require": "./dist/cjs/config-v4.cjs",
       "types": "./dist/config-v4.d.ts"
     },
     "./v4/env-config": {
