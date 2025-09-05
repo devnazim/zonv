@@ -1,6 +1,6 @@
 {
   "name": "zonv",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "configure your env with zod validation schema",
   "type": "module",
   "exports": {
@@ -63,7 +63,7 @@
   },
   "scripts": {
     "test": "rm -rf ./dist && npm run build:esm && node --test-concurrency 1 --test ./dist/*.test.js ./dist/**/*.test.js ",
-    "build:cjs": "node scripts/build-cjs.js && tsc -p tsconfig.cjs.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json && node scripts/build-cjs.js",
     "build:esm": "tsc -p tsconfig.esm.json",
     "build": "npm run build:esm && npm run build:cjs",
     "clean": "rm -rf dist",
@@ -83,11 +83,12 @@
     "@eslint/js": "^9.20.0",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^22.13.1",
-    "esbuild": "^0.25.9",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.0.1",
     "globals": "^16.3.0",
     "prettier": "^3.5.0",
+    "rollup": "^4.50.0",
+    "tslib": "^2.8.1",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.23.0"
   },

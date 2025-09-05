@@ -1,18 +1,32 @@
-import esbuild from 'esbuild';
+import fs from 'fs';
+import path from 'path';
 
-async function build() {
-  // CJS build → dist/cjs/*.cjs
-  await esbuild.build({
-    entryPoints: ['./src/**/*.ts'], // or glob like ["src/**/*.ts"]
-    outdir: 'dist/cjs',
-    format: 'cjs',
-    platform: 'node',
-    target: ['node18'],
-    sourcemap: true,
-    outExtension: { '.js': '.cjs' },
-  });
-
-  console.log('Build complete ✅');
+function walk(dir, cb) {
+  for (const entry of fs.readdirSync(dir)) {
+    const full = path.join(dir, entry);
+    if (fs.statSync(full).isDirectory()) {
+      walk(full, cb);
+    } else {
+      cb(full);
+    }
+  }
 }
 
-build().catch(() => process.exit(1));
+const cjsDir = 'dist/cjs';
+
+// rename .js → .cjs and fix imports
+walk(cjsDir, (file) => {
+  if (file.endsWith('.js')) {
+    const newFile = file.replace(/\.js$/, '.cjs');
+    fs.renameSync(file, newFile);
+  }
+});
+
+walk(cjsDir, (file) => {
+  if (file.endsWith('.cjs')) {
+    let code = fs.readFileSync(file, 'utf8');
+    code = code.replace(/(require\(["'].*)\.js(["']\))/g, '$1.cjs$2');
+    code = code.replace(/(from ["'].*)\.js(["'])/g, '$1.cjs$2');
+    fs.writeFileSync(file, code);
+  }
+});
