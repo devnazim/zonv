@@ -1,13 +1,13 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { z } from 'zod/v3';
+import { z } from 'zod';
 import merge from 'lodash.merge';
 
-import { getConfig, getConfigAsync } from './config-v3.js';
-import { getConfigFromEnv } from './env-config-v3.js';
+import { getConfig, getConfigAsync } from './config-v4.js';
+import { getConfigFromEnv } from './env-config-v4.js';
 import { createConfigFiles } from './test-utils.js';
 
-describe('getConfig', { concurrency: false }, () => {
+describe('getConfig with zod/v4', { concurrency: false }, () => {
   describe('validate schema without secrets', () => {
     const schema = z.object({
       name: z.string(),
@@ -220,6 +220,7 @@ describe('getConfig', { concurrency: false }, () => {
       const data = { name: 'test', server: { port: 3000, host: 'localhost' } };
       const { cleanup } = await createConfigFiles([{ path, data }]);
       try {
+        // Override nested value via env
         process.env['server___port'] = '8080';
         const config = getConfig({ schema, configPath: [path] });
         assert.equal(config.server?.port, 8080);
@@ -315,7 +316,7 @@ describe('getConfig', { concurrency: false }, () => {
       try {
         process.env['value'] = '';
         const config = getConfig({ schema, configPath: [path] });
-        assert.equal(config.value, 'from-file');
+        assert.equal(config.value, 'from-file'); // Should not be overridden by empty string
       } finally {
         delete process.env['value'];
         await cleanup();
@@ -332,7 +333,7 @@ describe('getConfig', { concurrency: false }, () => {
       await fs.writeFile(path, '   \n\t  \n  ');
       try {
         const config = getConfig({ schema, configPath: [path] });
-        assert.equal(config.name, 'default-name');
+        assert.equal(config.name, 'default-name'); // Should use default since file is empty
       } finally {
         await cleanup();
       }
@@ -341,6 +342,7 @@ describe('getConfig', { concurrency: false }, () => {
     it('throws on invalid JSON config file', async () => {
       const path = './tmp/test/config.json';
       const schema = z.object({ name: z.string() });
+      // Create file with invalid JSON
       const { cleanup } = await createConfigFiles([{ path, data: {} }]);
       const fs = await import('node:fs/promises');
       await fs.writeFile(path, 'not valid json');

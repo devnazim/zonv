@@ -1,12 +1,41 @@
 import { resolve } from 'node:path';
 import { cwd } from 'node:process';
 
-const buildArrayFromString = (str: string) => {
+/**
+ * Splits a comma or whitespace-separated string into an array of paths.
+ */
+const buildArrayFromString = (str: string): string[] => {
   const regex = /\s+|,\s*/gm;
   return str.split(regex);
 };
 
-export const getPaths = ({ type, path, env }: { type: 'config' | 'secrets'; path?: string[] | string; env?: string }) => {
+/** Options for getPaths function */
+export interface GetPathsOptions {
+  /** Type of config file - determines default directory */
+  type: 'config' | 'secrets';
+  /** Path(s) to config files - can be a single path, array, or comma-separated string */
+  path?: string[] | string;
+  /** Environment name prefix for config files */
+  env?: string;
+}
+
+/**
+ * Resolves configuration file paths based on provided options.
+ *
+ * If no path is provided, returns the default path:
+ * - For config: `config/{env.}config.json`
+ * - For secrets: `secrets/{env.}secrets.json`
+ *
+ * @param options - Path resolution options
+ * @returns Array of resolved file paths
+ *
+ * @example
+ * getPaths({ type: 'config' }); // ['<cwd>/config/config.json']
+ * getPaths({ type: 'config', env: 'prod' }); // ['<cwd>/config/prod.config.json']
+ * getPaths({ type: 'config', path: '/custom/path.json' }); // ['/custom/path.json']
+ * getPaths({ type: 'config', path: 'a.json, b.json' }); // ['a.json', 'b.json']
+ */
+export const getPaths = ({ type, path, env }: GetPathsOptions): string[] => {
   const pathArr: string[] = [];
   if (Array.isArray(path) && path.length) {
     pathArr.push(...path);
