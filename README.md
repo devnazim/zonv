@@ -160,6 +160,136 @@ const config = getConfigFromEnv({ schema: configSchema });
 export { config };
 ```
 
+### Next.js Integration
+
+Zonv works seamlessly with Next.js. The recommended approach is to create separate configs for server-side and client-side (public) environment variables using `getConfigFromEnv`.
+
+#### Project Structure
+
+```plaintext
+project/
+├── config/
+│   ├── server.ts      # Server-side config (secrets, API keys)
+│   ├── public.ts      # Client-side config (NEXT_PUBLIC_* vars)
+│   └── index.ts       # Barrel export
+├── app/
+│   └── page.tsx
+├── .env.local
+└── .env.example
+```
+
+#### Server Configuration
+
+Create `config/server.ts` for server-only environment variables (database URLs, API secrets, etc.):
+
+```typescript
+// config/server.ts
+import { z } from 'zod';
+import { getConfigFromEnv } from 'zonv/env-config';
+
+const serverConfigSchema = z.object({
+  DATABASE_URL: z.string().url(),
+  AUTH_SECRET: z.string().min(32),
+  API_SECRET_KEY: z.string().optional(),
+  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  PORT: z.coerce.number().default(3000),
+});
+
+export const serverConfig = getConfigFromEnv({
+  schema: serverConfigSchema,
+});
+
+export type ServerConfig = typeof serverConfig;
+```
+
+#### Public Configuration
+
+Create `config/public.ts` for client-safe environment variables. In Next.js, these must be prefixed with `NEXT_PUBLIC_`:
+
+```typescript
+// config/public.ts
+import { z } from 'zod';
+import { getConfigFromEnv } from 'zonv/env-config';
+
+const publicConfigSchema = z.object({
+  NEXT_PUBLIC_API_URL: z.string().url().optional(),
+  NEXT_PUBLIC_APP_NAME: z.string().default('My App'),
+  NEXT_PUBLIC_ANALYTICS_ID: z.string().optional(),
+  NEXT_PUBLIC_ENABLE_DEBUG: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
+});
+
+export const publicConfig = getConfigFromEnv({
+  schema: publicConfigSchema,
+});
+
+export type PublicConfig = typeof publicConfig;
+```
+
+#### Barrel Export
+
+Create `config/index.ts` for convenient imports:
+
+```typescript
+// config/index.ts
+export { serverConfig, type ServerConfig } from './server';
+export { publicConfig, type PublicConfig } from './public';
+```
+
+#### Usage in Components
+
+Server Components can access both server and public configs:
+
+```typescript
+// app/page.tsx (Server Component)
+import { serverConfig } from "@/config/server";
+import { publicConfig } from "@/config/public";
+
+export default function Home() {
+  return (
+    <div>
+      <h1>{publicConfig.NEXT_PUBLIC_APP_NAME}</h1>
+      <p>Environment: {serverConfig.NODE_ENV}</p>
+      <p>Debug: {publicConfig.NEXT_PUBLIC_ENABLE_DEBUG ? "enabled" : "disabled"}</p>
+    </div>
+  );
+}
+```
+
+Client Components should only use public config:
+
+```typescript
+// components/ClientComponent.tsx
+"use client";
+
+import { publicConfig } from "@/config/public";
+
+export function ClientComponent() {
+  return <p>API URL: {publicConfig.NEXT_PUBLIC_API_URL}</p>;
+}
+```
+
+#### Environment Variables Example
+
+```bash
+# .env.local
+
+# Server-side (keep secret)
+DATABASE_URL=postgresql://user:password@localhost:5432/mydb
+AUTH_SECRET=your-super-secret-key-at-least-32-characters
+API_SECRET_KEY=sk-your-api-secret-key
+
+# Client-side (exposed to browser)
+NEXT_PUBLIC_API_URL=https://api.example.com
+NEXT_PUBLIC_APP_NAME=My App
+NEXT_PUBLIC_ANALYTICS_ID=GA-XXXXXXXXX
+NEXT_PUBLIC_ENABLE_DEBUG=false
+```
+
+> **Important:** Server config variables are only available in Server Components, API Routes, and server-side functions.
+
 ### Configuration Sources
 
 #### File
