@@ -487,6 +487,116 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
     });
   });
 
+  describe('Zod 4.3.x features', () => {
+    it('works with z.looseRecord for flexible key-value configs', async () => {
+      const path = './tmp/test/config.json';
+      const schema = z.object({
+        name: z.string(),
+        metadata: z.looseRecord(z.string(), z.string()),
+      });
+      const data = {
+        name: 'test',
+        metadata: { key1: 'value1', key2: 'value2', extraKey: 'extraValue' },
+      };
+      const { cleanup } = await createConfigFiles([{ path, data }]);
+      try {
+        const config = getConfig({ schema, configPath: [path] });
+        assert.equal(config.name, 'test');
+        assert.equal(config.metadata.key1, 'value1');
+        assert.equal(config.metadata.extraKey, 'extraValue');
+      } finally {
+        await cleanup();
+      }
+    });
+
+    it('works with z.xor for mutually exclusive config options', async () => {
+      const path = './tmp/test/config.json';
+      const schema = z.object({
+        name: z.string(),
+        auth: z.xor([z.object({ apiKey: z.string() }), z.object({ token: z.string() })]),
+      });
+      const data = { name: 'test', auth: { apiKey: 'my-api-key' } };
+      const { cleanup } = await createConfigFiles([{ path, data }]);
+      try {
+        const config = getConfig({ schema, configPath: [path] });
+        assert.equal(config.name, 'test');
+        // Use type guard pattern for better type safety
+        assert.ok('apiKey' in config.auth, 'Expected auth to have apiKey property');
+        assert.equal(config.auth.apiKey, 'my-api-key');
+      } finally {
+        await cleanup();
+      }
+    });
+
+    it('rejects z.xor when both options are provided', async () => {
+      const path = './tmp/test/config.json';
+      const schema = z.object({
+        name: z.string(),
+        auth: z.xor([z.object({ apiKey: z.string() }), z.object({ token: z.string() })]),
+      });
+      // Both apiKey and token provided - should fail validation
+      const data = { name: 'test', auth: { apiKey: 'my-api-key', token: 'my-token' } };
+      const { cleanup } = await createConfigFiles([{ path, data }]);
+      try {
+        assert.throws(() => getConfig({ schema, configPath: [path] }), /invalid/i);
+      } finally {
+        await cleanup();
+      }
+    });
+
+    it('works with .exactOptional() for strict optional handling', async () => {
+      const path = './tmp/test/config.json';
+      const schema = z.object({
+        name: z.string(),
+        port: z.number().exactOptional(),
+      });
+      // Test with the optional field present
+      const data = { name: 'test', port: 3000 };
+      const { cleanup } = await createConfigFiles([{ path, data }]);
+      try {
+        const config = getConfig({ schema, configPath: [path] });
+        assert.equal(config.name, 'test');
+        assert.equal(config.port, 3000);
+      } finally {
+        await cleanup();
+      }
+    });
+
+    it('works with .exactOptional() when field is absent', async () => {
+      const path = './tmp/test/config.json';
+      const schema = z.object({
+        name: z.string(),
+        port: z.number().exactOptional(),
+      });
+      // Test without the optional field
+      const data = { name: 'test' };
+      const { cleanup } = await createConfigFiles([{ path, data }]);
+      try {
+        const config = getConfig({ schema, configPath: [path] });
+        assert.equal(config.name, 'test');
+        assert.equal(config.port, undefined);
+      } finally {
+        await cleanup();
+      }
+    });
+
+    it('works with z.string().slugify() for URL-safe string transformation', async () => {
+      const path = './tmp/test/config.json';
+      const schema = z.object({
+        slug: z.string().slugify(),
+      });
+      const data = { slug: 'Hello World Test' };
+      const { cleanup } = await createConfigFiles([{ path, data }]);
+      try {
+        const config = getConfig({ schema, configPath: [path] });
+        // slugify transforms "Hello World Test" to "hello-world-test"
+        assert.equal(config.slug, 'hello-world-test');
+      } finally {
+        await cleanup();
+      }
+    });
+  });
+
   describe('getConfigAsync', () => {
     it('loads config asynchronously', async () => {
       const path = './tmp/test/config.json';

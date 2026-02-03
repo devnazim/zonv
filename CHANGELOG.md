@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.2] - 2026-02-03
+
+### Added
+
+- Integration tests for Zod 4.3.x features (`z.looseRecord`, `z.xor`, `.exactOptional()`, `.slugify()`)
+- Tested Zod versions documentation in README
+
+### Changed
+
+- Updated dev dependencies to latest versions:
+  - `@types/node`: 24.10.9 → 24.10.10
+  - `globals`: 17.0.0 → 17.3.0
+  - `prettier`: 3.8.0 → 3.8.1
+  - `typescript-eslint`: 8.53.0 → 8.54.0
+- Updated `zod` peer dependency tested version: 4.1.5 → 4.3.6
+- Improved TypeScript configuration with explicit `lib` and `types` options
+
+### Notes for Users
+
+- **Zod 4.3.x Breaking Changes**: If you update Zod alongside zonv, be aware of the following changes in Zod 4.3.x that may affect your code:
+  - `.pick()` and `.omit()` now throw on schemas with refinements (previously silently dropped refinements)
+  - `.extend()` throws when overwriting properties on schemas with refinements
+  - `.pick()` and `.omit()` now validate that keys exist in the schema
+
+  These changes do not affect zonv's internal functionality, but may affect your schema definitions if you use these methods on refined schemas.
+
 ## [2.2.0] - 2026-01-16
 
 ### Added
@@ -134,7 +160,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Environment variable overrides
 - TypeScript support with full type inference
 
-[Unreleased]: https://github.com/devnazim/zonv/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/devnazim/zonv/compare/v2.2.2...HEAD
+[2.2.2]: https://github.com/devnazim/zonv/compare/v2.2.0...v2.2.2
 [2.2.0]: https://github.com/devnazim/zonv/compare/v2.1.3...v2.2.0
 [2.1.3]: https://github.com/devnazim/zonv/compare/v2.1.2...v2.1.3
 [2.1.2]: https://github.com/devnazim/zonv/compare/v2.1.1...v2.1.2

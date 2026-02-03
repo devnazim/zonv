@@ -17,6 +17,15 @@ Zonv is a package that enables you to validate your application configuration us
 - Node.js >= 18.0.0
 - Zod ^3.0.0 or ^4.0.0 (peer dependency)
 
+### Tested Zod Versions
+
+| Zod Version | Status | Notes                        |
+| ----------- | ------ | ---------------------------- |
+| 3.24.x      | Tested | Use `zonv/v3` import path    |
+| 4.3.x       | Tested | Default import (recommended) |
+
+> **Note on Zod 4.3.x**: This version introduced some breaking changes to `.pick()`, `.omit()`, and `.extend()` methods when used on schemas with refinements. These changes don't affect zonv's functionality, but may affect your schema definitions. See the [Zod 4.3.0 release notes](https://github.com/colinhacks/zod/releases/tag/v4.3.0) for details.
+
 ## Module Support
 
 Zonv supports both **ESM** and **CommonJS** module systems:

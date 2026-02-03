@@ -1,6 +1,6 @@
 {
   "name": "zonv",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Type-safe configuration management with Zod schema validation. Load config from JSON files and environment variables with full TypeScript support.",
   "type": "module",
   "sideEffects": false,
