@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.3] - 2026-04-13
+
+### Added
+
+- `npm run lint` script for the ESLint flat config
+- README guidance for importing validated config via a TypeScript path alias, including the matching runtime or bundler alias requirement
+
+### Changed
+
+- Updated dev dependencies to latest versions:
+  - `@eslint/js`: 9.39.2 -> 10.0.1
+  - `@types/node`: 24.10.10 -> 25.6.0
+  - `eslint`: 9.39.2 -> 10.2.0
+  - `eslint-config-prettier`: 10.0.1 -> 10.1.8
+  - `globals`: 17.3.0 -> 17.5.0
+  - `prettier`: 3.8.1 -> 3.8.2
+  - `typescript`: 5.9.3 -> 6.0.2
+  - `typescript-eslint`: 8.54.0 -> 8.58.1
+- Updated TypeScript build configuration for TS6 by setting `rootDir` explicitly and preserving the existing CommonJS output
+- Clarified custom delimiter documentation to note that any non-empty delimiter is supported
+- Preserved original error causes when rethrowing config parsing and loading errors
+- Release validation now runs `npm run lint` before test and build steps
+
+### Fixed
+
+- Fixed `zonv/v3` to work with real `zod@3` installs without requiring the `zod/v3` subpath at runtime
+- Fixed `zonv/env-config` bundling for Next.js and other client-bundled env-only usage by separating env-only loading from file-based config loading
+
+### Security
+
+- Applied `npm audit fix` to resolve a transitive vulnerability in `flatted`
+
+### Notes for Maintainers
+
+- Dev tooling now follows upstream Node requirements from ESLint 10 and related tooling; package runtime support remains `node >=18.0.0`
+- `tsconfig.cjs.json` temporarily uses `ignoreDeprecations: "6.0"` while the CommonJS build still relies on deprecated TS6 compiler options; revisit this before TS7
+
 ## [2.2.2] - 2026-02-03
 
 ### Added

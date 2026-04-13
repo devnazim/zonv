@@ -1,11 +1,10 @@
-import { z, SomeZodObject } from 'zod/v3';
-
 import { getConfigCore, getConfigAsyncCore } from './core/config-loader.js';
+import type { InferZodV3Output, ZodV3ObjectLike } from './core/zod-v3-types.js';
 import { zodV3Adapter } from './core/zod-v3-adapter.js';
 import type { BaseGetConfigOptions } from './core/types.js';
 
 /** Options for getConfig function */
-export interface GetConfigOptions<S extends SomeZodObject> extends BaseGetConfigOptions {
+export interface GetConfigOptions<S extends ZodV3ObjectLike> extends BaseGetConfigOptions {
   /** Zod schema used to validate the configuration */
   schema: S;
 }
@@ -43,8 +42,8 @@ export interface GetConfigOptions<S extends SomeZodObject> extends BaseGetConfig
  * const config = getConfig({ schema, delimiter: '__' });
  * // Now uses 'server__port' instead of 'server___port' for nested paths
  */
-export const getConfig = <S extends SomeZodObject>({ schema, configPath, secretsPath, env, debug = false, delimiter }: GetConfigOptions<S>): z.infer<S> => {
-  return getConfigCore<z.infer<S>>({ configPath, secretsPath, env, debug, delimiter }, schema, zodV3Adapter);
+export const getConfig = <S extends ZodV3ObjectLike>({ schema, configPath, secretsPath, env, debug = false, delimiter }: GetConfigOptions<S>): InferZodV3Output<S> => {
+  return getConfigCore<InferZodV3Output<S>>({ configPath, secretsPath, env, debug, delimiter }, schema, zodV3Adapter);
 };
 
 /**
@@ -71,6 +70,13 @@ export const getConfig = <S extends SomeZodObject>({ schema, configPath, secrets
  * const config = await getConfigAsync({ schema });
  * console.log(config.PORT); // Type-safe access
  */
-export const getConfigAsync = async <S extends SomeZodObject>({ schema, configPath, secretsPath, env, debug = false, delimiter }: GetConfigOptions<S>): Promise<z.infer<S>> => {
-  return getConfigAsyncCore<z.infer<S>>({ configPath, secretsPath, env, debug, delimiter }, schema, zodV3Adapter);
+export const getConfigAsync = async <S extends ZodV3ObjectLike>({
+  schema,
+  configPath,
+  secretsPath,
+  env,
+  debug = false,
+  delimiter,
+}: GetConfigOptions<S>): Promise<InferZodV3Output<S>> => {
+  return getConfigAsyncCore<InferZodV3Output<S>>({ configPath, secretsPath, env, debug, delimiter }, schema, zodV3Adapter);
 };

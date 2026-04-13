@@ -1,6 +1,6 @@
 import { z, ZodObject } from 'zod';
 
-import { getConfigFromEnvCore } from './core/config-loader.js';
+import { getConfigFromEnvCore } from './core/env-loader.js';
 import { zodV4Adapter } from './core/zod-v4-adapter.js';
 import type { BaseGetConfigFromEnvOptions } from './core/types.js';
 
@@ -13,6 +13,7 @@ export interface GetConfigFromEnvOptions<S extends ZodObject> extends BaseGetCon
 /**
  * Loads and validates configuration from environment variables only.
  * Useful when file-based config is not available (e.g., React Native, serverless).
+ * Environment variables arrive as strings, so use coercion or preprocessing for numbers and booleans.
  *
  * Environment variables use the delimiter (defaults to '___') as the nested path separator.
  * For example, `server___port` maps to `{ server: { port: ... } }`.
@@ -23,8 +24,11 @@ export interface GetConfigFromEnvOptions<S extends ZodObject> extends BaseGetCon
  * @throws Error if environment variable contains invalid JSON for object/array fields
  *
  * @example
+ * import { z } from 'zod';
+ * import { getConfigFromEnv } from 'zonv/env-config';
+ *
  * const schema = z.object({
- *   PORT: z.number().default(3000),
+ *   PORT: z.coerce.number().default(3000),
  *   API_BASE_URL: z.string().url(),
  * });
  *
@@ -33,14 +37,23 @@ export interface GetConfigFromEnvOptions<S extends ZodObject> extends BaseGetCon
  *
  * @example
  * // Nested config with env vars
+ * import { z } from 'zod';
+ * import { getConfigFromEnv } from 'zonv/env-config';
+ *
  * const schema = z.object({
- *   server: z.object({ port: z.number(), host: z.string() })
+ *   server: z.object({ port: z.coerce.number(), host: z.string() })
  * });
  * // Set env vars: server___port=8080, server___host=localhost
  * const config = getConfigFromEnv({ schema });
  *
  * @example
  * // With custom delimiter
+ * import { z } from 'zod';
+ * import { getConfigFromEnv } from 'zonv/env-config';
+ *
+ * const schema = z.object({
+ *   server: z.object({ port: z.coerce.number() })
+ * });
  * const config = getConfigFromEnv({ schema, delimiter: '__' });
  * // Now uses 'server__port' instead of 'server___port'
  */

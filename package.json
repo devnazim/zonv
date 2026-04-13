@@ -1,6 +1,6 @@
 {
   "name": "zonv",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Type-safe configuration management with Zod schema validation. Load config from JSON files and environment variables with full TypeScript support.",
   "type": "module",
   "sideEffects": false,
@@ -80,13 +80,14 @@
     "url": "https://github.com/devnazim/zonv/issues"
   },
   "scripts": {
-    "test": "rm -rf ./dist && npm run build:esm && node --test-concurrency 1 --test ./dist/*.test.js ./dist/**/*.test.js ",
+    "test": "npm run build && node --test-concurrency 1 --test ./dist/*.test.js ./dist/**/*.test.js ",
+    "lint": "eslint src scripts eslint.config.mjs",
     "build:cjs": "tsc -p tsconfig.cjs.json && node scripts/build-cjs.js",
     "build:esm": "tsc -p tsconfig.esm.json",
     "build": "npm run build:esm && npm run build:cjs",
     "clean": "rm -rf dist",
     "prebuild": "npm run clean",
-    "prepublishOnly": "npm test && npm run build"
+    "prepublishOnly": "npm run lint && npm test"
   },
   "keywords": [
     "config",
@@ -112,16 +113,16 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^10.0.1",
     "@types/lodash.merge": "^4.6.9",
-    "@types/node": "^24.0.0",
-    "eslint": "^9.39.2",
-    "eslint-config-prettier": "^10.0.1",
-    "globals": "^17.0.0",
-    "prettier": "^3.8.0",
+    "@types/node": "^25.6.0",
+    "eslint": "^10.2.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.5.0",
+    "prettier": "^3.8.2",
     "tslib": "^2.8.1",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.53.0"
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.1"
   },
   "peerDependencies": {
     "zod": "^3.0.0 || ^4.0.0"

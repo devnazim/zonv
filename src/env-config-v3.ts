@@ -1,11 +1,10 @@
-import { z, SomeZodObject } from 'zod/v3';
-
-import { getConfigFromEnvCore } from './core/config-loader.js';
+import { getConfigFromEnvCore } from './core/env-loader.js';
+import type { InferZodV3Output, ZodV3ObjectLike } from './core/zod-v3-types.js';
 import { zodV3Adapter } from './core/zod-v3-adapter.js';
 import type { BaseGetConfigFromEnvOptions } from './core/types.js';
 
 /** Options for getConfigFromEnv function */
-export interface GetConfigFromEnvOptions<S extends SomeZodObject> extends BaseGetConfigFromEnvOptions {
+export interface GetConfigFromEnvOptions<S extends ZodV3ObjectLike> extends BaseGetConfigFromEnvOptions {
   /** Zod schema used to validate the configuration */
   schema: S;
 }
@@ -13,6 +12,7 @@ export interface GetConfigFromEnvOptions<S extends SomeZodObject> extends BaseGe
 /**
  * Loads and validates configuration from environment variables only.
  * Useful when file-based config is not available (e.g., React Native, serverless).
+ * Environment variables arrive as strings, so use coercion or preprocessing for numbers and booleans.
  *
  * Environment variables use the delimiter (defaults to '___') as the nested path separator.
  * For example, `server___port` maps to `{ server: { port: ... } }`.
@@ -23,8 +23,11 @@ export interface GetConfigFromEnvOptions<S extends SomeZodObject> extends BaseGe
  * @throws Error if environment variable contains invalid JSON for object/array fields
  *
  * @example
+ * import { z } from 'zod';
+ * import { getConfigFromEnv } from 'zonv/v3/env-config';
+ *
  * const schema = z.object({
- *   PORT: z.number().default(3000),
+ *   PORT: z.coerce.number().default(3000),
  *   API_BASE_URL: z.string().url(),
  * });
  *
@@ -33,17 +36,26 @@ export interface GetConfigFromEnvOptions<S extends SomeZodObject> extends BaseGe
  *
  * @example
  * // Nested config with env vars
+ * import { z } from 'zod';
+ * import { getConfigFromEnv } from 'zonv/v3/env-config';
+ *
  * const schema = z.object({
- *   server: z.object({ port: z.number(), host: z.string() })
+ *   server: z.object({ port: z.coerce.number(), host: z.string() })
  * });
  * // Set env vars: server___port=8080, server___host=localhost
  * const config = getConfigFromEnv({ schema });
  *
  * @example
  * // With custom delimiter
+ * import { z } from 'zod';
+ * import { getConfigFromEnv } from 'zonv/v3/env-config';
+ *
+ * const schema = z.object({
+ *   server: z.object({ port: z.coerce.number() })
+ * });
  * const config = getConfigFromEnv({ schema, delimiter: '__' });
  * // Now uses 'server__port' instead of 'server___port'
  */
-export const getConfigFromEnv = <S extends SomeZodObject>({ schema, debug = false, delimiter }: GetConfigFromEnvOptions<S>): z.infer<S> => {
-  return getConfigFromEnvCore<z.infer<S>>({ debug, delimiter }, schema, zodV3Adapter);
+export const getConfigFromEnv = <S extends ZodV3ObjectLike>({ schema, debug = false, delimiter }: GetConfigFromEnvOptions<S>): InferZodV3Output<S> => {
+  return getConfigFromEnvCore<InferZodV3Output<S>>({ debug, delimiter }, schema, zodV3Adapter);
 };

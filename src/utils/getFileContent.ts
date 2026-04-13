@@ -22,7 +22,7 @@ const parseAndValidateContent = (fileContent: string, path: string): Record<stri
     parsed = JSON.parse(fileContent);
   } catch (e) {
     const error = e instanceof Error ? e : new Error(String(e));
-    throw new Error(`Failed to parse JSON in config file "${path}": ${error.message}`);
+    throw new Error(`Failed to parse JSON in config file "${path}": ${error.message}`, { cause: e });
   }
 
   // Validate that the parsed content is a plain object (not array, null, or primitive)
@@ -61,7 +61,7 @@ export const getFileContent = (path: string): Record<string, unknown> => {
       return {};
     }
     // Re-throw other errors (permission denied, etc.)
-    throw new Error(`Failed to read config file "${path}": ${error.message}`);
+    throw new Error(`Failed to read config file "${path}": ${error.message}`, { cause: e });
   }
 
   return parseAndValidateContent(fileContent, path);
@@ -93,7 +93,7 @@ export const getFileContentAsync = async (path: string): Promise<Record<string, 
       return {};
     }
     // Re-throw other errors (permission denied, etc.)
-    throw new Error(`Failed to read config file "${path}": ${error.message}`);
+    throw new Error(`Failed to read config file "${path}": ${error.message}`, { cause: e });
   }
 
   return parseAndValidateContent(fileContent, path);

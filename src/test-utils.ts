@@ -47,7 +47,7 @@ export const createConfigFiles = async (files: TestConfigFile[]): Promise<TestCo
     const dir = dirname(file.path);
     const paths = dir.split(sep);
     const nestedPaths: string[] = [];
-    let currentPath: string[] = [];
+    const currentPath: string[] = [];
 
     for (const path of paths) {
       currentPath.push(path);

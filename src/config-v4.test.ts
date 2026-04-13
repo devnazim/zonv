@@ -22,8 +22,6 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
       try {
         const config = await getConfig({ schema, configPath: [path] });
         assert.deepEqual(data, config);
-      } catch (e) {
-        throw e;
       } finally {
         await cleanup();
       }
@@ -35,8 +33,6 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
       try {
         const config = await getConfig({ schema, configPath: [path] });
         assert.deepEqual(data, config);
-      } catch (e) {
-        throw e;
       } finally {
         await cleanup();
       }
@@ -51,8 +47,6 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
           config.arr,
           data.arr.map(({ id, val }) => ({ id: Number(id), val: String(val) }))
         );
-      } catch (e) {
-        throw e;
       } finally {
         await cleanup();
       }
@@ -66,8 +60,6 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
       try {
         const config = await getConfig({ schema, configPath: [path] });
         assert.equal(config.name, overrideName);
-      } catch (e) {
-        throw e;
       } finally {
         await cleanup();
         delete process.env.name;
@@ -82,8 +74,6 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
       try {
         const config = await getConfig({ schema, configPath: [path] });
         assert.equal(config.nested.bar, nestedBar);
-      } catch (e) {
-        throw e;
       } finally {
         await cleanup();
         delete process.env['nested___bar'];
@@ -98,8 +88,6 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
       try {
         const config = await getConfig({ schema, configPath: [path] });
         assert.deepEqual(config.nested, nested);
-      } catch (e) {
-        throw e;
       } finally {
         await cleanup();
         delete process.env.nested;
@@ -117,8 +105,6 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
       try {
         const config = await getConfig({ schema, configPath: [path] });
         assert.deepEqual(config.arr, arr);
-      } catch (e) {
-        throw e;
       } finally {
         await cleanup();
         delete process.env.arr;
@@ -133,8 +119,6 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
       try {
         const config = await getConfig({ schema, configPath: [path] });
         assert.equal(config.name, overrideName);
-      } catch (e) {
-        throw e;
       } finally {
         await cleanup();
         delete process.env.name;
@@ -150,8 +134,6 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
       try {
         const config = await getConfig({ schema, configPath: [path1, path2] });
         assert.deepEqual(merge(data1, data2), config);
-      } catch (e) {
-        throw e;
       } finally {
         await cleanup1();
         await cleanup2();
@@ -173,8 +155,6 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
       try {
         const config = await getConfig({ schema, configPath, secretsPath });
         assert.deepEqual(merge(configData, secretsData), config);
-      } catch (e) {
-        throw e;
       } finally {
         await cleanup();
       }
@@ -200,8 +180,6 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
         const config = getConfigFromEnv({ schema });
         assert.equal(config.FOO, 'foo');
         assert.equal(config.NESTED.BAZ, 'baz');
-      } catch (e) {
-        throw e;
       } finally {
         for (const envVariable of envVariables) {
           delete process.env[envVariable.key];

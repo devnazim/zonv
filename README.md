@@ -85,6 +85,17 @@ const config = getConfig({
 export { config };
 ```
 
+Then import the validated config from other files through a TypeScript path alias after configuring the alias shown below:
+
+```typescript
+// server.ts
+import { config } from '@config'; // TypeScript path alias that points to ./config.ts (configure the same alias in your runtime or bundler)
+
+console.log(config.PORT); // Full type safety and autocomplete from your schema
+```
+
+> `@config` is a TypeScript path alias. It keeps imports clean while preserving type safety and editor autocomplete because `config` is inferred from your Zod schema. If you run compiled JavaScript directly, make sure your runtime or bundler resolves the same alias too.
+
 ### Zod Version Support
 
 Zonv supports both **Zod v4** (default) and **Zod v3**. The default import uses Zod v4. If your project uses Zod v3, use the `/v3` import path:
@@ -160,7 +171,7 @@ import { z } from 'zod';
 import { getConfigFromEnv } from 'zonv/v3/env-config';
 
 const configSchema = z.object({
-  PORT: z.number().default(3000),
+  PORT: z.coerce.number().default(3000),
   API_BASE_URL: z.string().url(),
 });
 
@@ -168,6 +179,8 @@ const config = getConfigFromEnv({ schema: configSchema });
 
 export { config };
 ```
+
+Environment variables arrive as strings, so use `z.coerce.number()` for numbers and an explicit transform for booleans, for example `z.enum(['true', 'false']).transform((v) => v === 'true')`.
 
 ### Next.js Integration
 
@@ -354,24 +367,26 @@ secrets/secrets.json
 
 > WARNING: DON'T add secrets to your git repo. Note that there are NO production or staging secrets. Only your personal secrets and `example.secrets.json` as an example. Use environment variables or volume mapping with secrets managers for production.
 
-Add config path to your tsconfig.json:
+Add a TypeScript path alias to your tsconfig.json:
 
 ```json
 {
   "compilerOptions": {
     "paths": {
-      "@/config": ["./config"]
+      "@config": ["./config.ts"]
     }
   }
 }
 ```
 
+> `paths` helps TypeScript and your editor resolve `@config`. If your runtime or bundler does not support this alias, either configure the same alias there too or use a relative import instead.
+
 Import your type-safe config:
 
 ```typescript
-import { config } from '@/config';
+import { config } from '@config';
 
-console.log(config.PORT); // Access type-safe configuration
+console.log(config.PORT); // Access validated config with type safety and autocomplete
 ```
 
 #### Environment Variables
@@ -445,7 +460,7 @@ process.env.SERVER = '{"host": "0.0.0.0"}';
 
 - **`debug`** (boolean, optional): Enable debug logging to see which files and environment variables are being loaded. Useful for troubleshooting configuration issues.
 
-- **`delimiter`** (string, optional): The delimiter used to separate nested paths in environment variable names. Defaults to `___` (triple underscore). For example, with `delimiter: '__'`, use `server__port` instead of `server___port`.
+- **`delimiter`** (string, optional): The delimiter used to separate nested paths in environment variable names. Defaults to `___` (triple underscore). Any non-empty string is supported. For example, with `delimiter: '__'`, use `server__port` instead of `server___port`.
 
 #### Returns:
 
@@ -459,7 +474,7 @@ Use this function when you only want to load configuration from environment vari
 
 - **`schema`** (Zod schema, required): The Zod schema used to validate your configuration.
 - **`debug`** (boolean, optional): Enable debug logging.
-- **`delimiter`** (string, optional): The delimiter for nested paths. Defaults to `___`.
+- **`delimiter`** (string, optional): The delimiter for nested paths. Defaults to `___`. Any non-empty string is supported.
 
 #### Returns:
 
@@ -598,6 +613,8 @@ const config = getConfig({
 ```
 
 This is useful when integrating with systems that have restrictions on environment variable naming.
+
+`delimiter` accepts any non-empty string. `.` is also supported when your runtime or process manager can provide keys like `api.key`, but `__` or `___` is usually easier to work with in shell-based workflows.
 
 ## Debug Mode
 

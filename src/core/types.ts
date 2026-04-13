@@ -24,7 +24,7 @@ export interface BaseGetConfigOptions {
    *
    * @remarks
    * - Cannot be an empty string (will throw an error)
-   * - Avoid using '.' as it may conflict with internal path notation
+   * - '.' is supported, but delimiters like '__' or '___' are usually easier to work with in shells and process managers
    * - Single-character delimiters may cause unintended matches with system env vars
    */
   delimiter?: string;
@@ -42,7 +42,7 @@ export interface BaseGetConfigFromEnvOptions {
    *
    * @remarks
    * - Cannot be an empty string (will throw an error)
-   * - Avoid using '.' as it may conflict with internal path notation
+   * - '.' is supported, but delimiters like '__' or '___' are usually easier to work with in shells and process managers
    * - Single-character delimiters may cause unintended matches with system env vars
    */
   delimiter?: string;
