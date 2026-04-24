@@ -164,6 +164,15 @@ const config = getConfigFromEnv({ schema: configSchema });
 export { config };
 ```
 
+By default, `getConfigFromEnv()` reads from `process.env`. To read from custom environment-like sources, pass them with `envSources` from lower to higher precedence (later entries override earlier ones):
+
+```typescript
+const config = getConfigFromEnv({
+  schema: configSchema,
+  envSources: [import.meta.env, process.env],
+});
+```
+
 For Zod v3 with env-only config:
 
 ```typescript
@@ -312,6 +321,67 @@ NEXT_PUBLIC_ENABLE_DEBUG=false
 
 > **Important:** Server config variables are only available in Server Components, API Routes, and server-side functions.
 
+### Astro Integration
+
+Astro app modules expose `import.meta.env`, while server-side code can also read private secrets through the usual server environment access. Use zonv's default `process.env` behavior for private server secrets, and pass `import.meta.env` explicitly only for public/client-safe config.
+
+#### Server Configuration
+
+```typescript
+// src/config/server.ts
+import { z } from 'zod';
+import { getConfigFromEnv } from 'zonv/env-config';
+
+export const serverConfig = getConfigFromEnv({
+  schema: z.object({
+    DATABASE_URL: z.string().url(),
+    AUTH_SECRET: z.string().min(32),
+    MODE: z.enum(['development', 'production']).default('development'),
+  }),
+});
+```
+
+This keeps private values such as `DATABASE_URL` and `AUTH_SECRET` on the server side instead of recommending `import.meta.env` for secrets.
+
+#### Public Configuration
+
+In Astro, only `PUBLIC_*` variables are available in client-side code.
+
+```typescript
+// src/config/public.ts
+import { z } from 'zod';
+import { getConfigFromEnv } from 'zonv/env-config';
+
+export const publicConfig = getConfigFromEnv({
+  schema: z.object({
+    PUBLIC_API_URL: z.string().url(),
+    PUBLIC_APP_NAME: z.string().default('My Astro App'),
+    PUBLIC_ENABLE_DEBUG: z
+      .enum(['true', 'false'])
+      .default('false')
+      .transform((v) => v === 'true'),
+  }),
+  envSources: [import.meta.env],
+});
+```
+
+#### Usage in Astro
+
+```astro
+---
+import { publicConfig } from '../config/public';
+import { serverConfig } from '../config/server';
+---
+
+<h1>{publicConfig.PUBLIC_APP_NAME}</h1>
+<p>{serverConfig.MODE}</p>
+<p>{publicConfig.PUBLIC_API_URL}</p>
+```
+
+> **Important:** `import.meta.env` is available in Astro app modules, routes, and islands, but not in `astro.config.*`. Use `process.env` or Vite's `loadEnv()` there instead.
+
+> **Note:** Astro and Vite also expose built-in typed flags such as `import.meta.env.DEV`, `PROD`, and `SSR`. Those values can be passed through `envSources` directly without string coercion.
+
 ### Configuration Sources
 
 #### File
@@ -399,7 +469,7 @@ PORT=4000 DATABASE_URL=https://new-db.example.com node app.js
 
 OR use env package e.g. dotenv.
 
-> **Note:** Environment variable names are **case-sensitive** and must match the schema property names exactly. For example, if your schema has `PORT`, you must use `PORT` (not `port` or `Port`). Empty string environment variables are ignored and won't override file-based configuration.
+> **Note:** Environment variable names are **case-sensitive** and must match the schema property names exactly. For example, if your schema has `PORT`, you must use `PORT` (not `port` or `Port`). Empty strings from `process.env` are ignored and won't override file-based configuration, while custom `envSources` can intentionally provide `''`.
 
 ### Merging and Precedence
 
@@ -407,15 +477,26 @@ Zonv automatically merges configuration sources in the following order (later so
 
 1. Config files (`configPath`)
 2. Secrets files (`secretsPath`)
-3. Environment variables (highest priority)
+3. `envSources` in array order (defaults to `[process.env]`)
+
+`getConfigFromEnv()` uses only `envSources`, and later entries override earlier ones there as well.
+
+```typescript
+const config = getConfig({
+  schema: configSchema,
+  envSources: [import.meta.env, process.env],
+});
+```
 
 ### Type Coercion for Environment Variables
 
-Environment variables are always strings. Zonv handles type conversion as follows:
+When values come from `process.env`, `import.meta.env`, or `.env` files, custom keys typically arrive as strings. Zonv handles type conversion as follows:
 
 - **Strings**: Work directly, no conversion needed
 - **Numbers/Booleans**: Use Zod's `z.coerce.*` methods for automatic conversion
 - **Objects/Arrays**: Provide as JSON strings in the environment variable
+
+If you pass custom `envSources`, already-typed values such as numbers, booleans, objects, and arrays are also supported directly.
 
 ```typescript
 const configSchema = z.object({
@@ -460,6 +541,8 @@ process.env.SERVER = '{"host": "0.0.0.0"}';
 
 - **`debug`** (boolean, optional): Enable debug logging to see which files and environment variables are being loaded. Useful for troubleshooting configuration issues.
 
+- **`envSources`** (array, optional): Ordered environment-like sources to apply after files. Defaults to `[process.env]`. Later entries override earlier ones. Useful for sources such as `import.meta.env`.
+
 - **`delimiter`** (string, optional): The delimiter used to separate nested paths in environment variable names. Defaults to `___` (triple underscore). Any non-empty string is supported. For example, with `delimiter: '__'`, use `server__port` instead of `server___port`.
 
 #### Returns:
@@ -474,6 +557,7 @@ Use this function when you only want to load configuration from environment vari
 
 - **`schema`** (Zod schema, required): The Zod schema used to validate your configuration.
 - **`debug`** (boolean, optional): Enable debug logging.
+- **`envSources`** (array, optional): Ordered environment-like sources to apply. Defaults to `[process.env]`. Later entries override earlier ones.
 - **`delimiter`** (string, optional): The delimiter for nested paths. Defaults to `___`. Any non-empty string is supported.
 
 #### Returns:
@@ -528,6 +612,15 @@ const config = getConfig({
   schema: configSchema,
   configPath: ['./path/config1.json', './path/config2.json'],
   secretsPath: ['./path/secrets1.json', './path/secrets2.json'],
+});
+```
+
+Use custom environment-like sources.
+
+```typescript
+const config = getConfig({
+  schema: configSchema,
+  envSources: [import.meta.env, process.env],
 });
 ```
 

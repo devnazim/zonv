@@ -6,6 +6,9 @@
 /** Default delimiter for environment variable nested paths */
 export const DEFAULT_ENV_DELIMITER = '___';
 
+/** Environment-like key/value source used by zonv. Examples: process.env, import.meta.env */
+export type EnvSource = Readonly<Record<string, unknown>>;
+
 /** Base options for getConfig function (version-agnostic) */
 export interface BaseGetConfigOptions {
   /** Path(s) to config JSON file(s). Defaults to 'config/config.json' */
@@ -16,6 +19,14 @@ export interface BaseGetConfigOptions {
   env?: string;
   /** Enable debug logging to see which files and env vars are being loaded */
   debug?: boolean;
+  /**
+   * Ordered environment-like sources used to override file-based configuration.
+   * Later sources override earlier ones. Defaults to [process.env].
+   * Examples: process.env, import.meta.env, or custom plain objects.
+   * Empty strings from process.env are ignored for backward compatibility,
+   * while custom envSources can intentionally provide ''.
+   */
+  envSources?: readonly EnvSource[];
   /**
    * Delimiter used to separate nested paths in environment variable names.
    * Defaults to '___' (triple underscore).
@@ -34,6 +45,14 @@ export interface BaseGetConfigOptions {
 export interface BaseGetConfigFromEnvOptions {
   /** Enable debug logging to see which env vars are being loaded */
   debug?: boolean;
+  /**
+   * Ordered environment-like sources used to build configuration.
+   * Later sources override earlier ones. Defaults to [process.env].
+   * Examples: process.env, import.meta.env, or custom plain objects.
+   * Empty strings from process.env are ignored for backward compatibility,
+   * while custom envSources can intentionally provide ''.
+   */
+  envSources?: readonly EnvSource[];
   /**
    * Delimiter used to separate nested paths in environment variable names.
    * Defaults to '___' (triple underscore).

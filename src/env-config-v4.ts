@@ -11,9 +11,14 @@ export interface GetConfigFromEnvOptions<S extends ZodObject> extends BaseGetCon
 }
 
 /**
- * Loads and validates configuration from environment variables only.
+ * Loads and validates configuration from environment-like sources only.
  * Useful when file-based config is not available (e.g., React Native, serverless).
- * Environment variables arrive as strings, so use coercion or preprocessing for numbers and booleans.
+ * Standard env sources such as process.env and .env files usually provide strings,
+ * so use coercion or preprocessing for numbers and booleans.
+ * Defaults to reading from [process.env], but custom `envSources` such as [import.meta.env]
+ * may also provide direct typed values.
+ * Empty strings from `process.env` are ignored for backward compatibility,
+ * while custom `envSources` can intentionally provide `''`.
  *
  * Environment variables use the delimiter (defaults to '___') as the nested path separator.
  * For example, `server___port` maps to `{ server: { port: ... } }`.
@@ -56,7 +61,11 @@ export interface GetConfigFromEnvOptions<S extends ZodObject> extends BaseGetCon
  * });
  * const config = getConfigFromEnv({ schema, delimiter: '__' });
  * // Now uses 'server__port' instead of 'server___port'
+ *
+ * @example
+ * // With Astro / Vite env sources
+ * const config = getConfigFromEnv({ schema, envSources: [import.meta.env] });
  */
-export const getConfigFromEnv = <S extends ZodObject>({ schema, debug = false, delimiter }: GetConfigFromEnvOptions<S>): z.infer<S> => {
-  return getConfigFromEnvCore<z.infer<S>>({ debug, delimiter }, schema, zodV4Adapter);
+export const getConfigFromEnv = <S extends ZodObject>({ schema, debug = false, envSources, delimiter }: GetConfigFromEnvOptions<S>): z.infer<S> => {
+  return getConfigFromEnvCore<z.infer<S>>({ debug, envSources, delimiter }, schema, zodV4Adapter);
 };

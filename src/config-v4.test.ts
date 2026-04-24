@@ -283,7 +283,7 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
   });
 
   describe('edge cases', () => {
-    it('ignores empty string env values', async () => {
+    it('ignores empty string values from process.env', async () => {
       const path = './tmp/test/config.json';
       const schema = z.object({
         name: z.string(),
@@ -294,7 +294,7 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
       try {
         process.env['value'] = '';
         const config = getConfig({ schema, configPath: [path] });
-        assert.equal(config.value, 'from-file'); // Should not be overridden by empty string
+        assert.equal(config.value, 'from-file');
       } finally {
         delete process.env['value'];
         await cleanup();
@@ -460,6 +460,111 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
         assert.equal(config.api.key, 'from-env');
       } finally {
         delete process.env['api.key'];
+        await cleanup();
+      }
+    });
+  });
+
+  describe('envSources', () => {
+    it('uses ordered envSources with direct values in getConfigFromEnv', () => {
+      const schema = z.object({
+        APP_NAME: z.string(),
+        flags: z.object({ debug: z.boolean() }),
+      });
+
+      const config = getConfigFromEnv({
+        schema,
+        envSources: [
+          { APP_NAME: 'from-first', flags: { debug: false } },
+          { APP_NAME: 'from-second' },
+          { 'flags___debug': true },
+        ],
+      });
+
+      assert.equal(config.APP_NAME, 'from-second');
+      assert.equal(config.flags.debug, true);
+    });
+
+    it('lets nested keys override parent object values within the same envSource', () => {
+      const schema = z.object({
+        server: z.object({ host: z.string(), port: z.number() }),
+      });
+
+      const config = getConfigFromEnv({
+        schema,
+        envSources: [{ server: { host: 'localhost', port: 3000 }, 'server___port': 4000 }],
+      });
+
+      assert.equal(config.server.host, 'localhost');
+      assert.equal(config.server.port, 4000);
+    });
+
+    it('applies envSources after files in order', async () => {
+      const path = './tmp/test/config.json';
+      const schema = z.object({
+        name: z.string(),
+        nested: z.object({ host: z.string(), port: z.coerce.number() }),
+      });
+      const data = { name: 'from-file', nested: { host: 'localhost', port: 3000 } };
+      const { cleanup } = await createConfigFiles([{ path, data }]);
+
+      try {
+        const config = getConfig({
+          schema,
+          configPath: [path],
+          envSources: [{ name: 'from-first', 'nested___port': '4000' }, { name: 'from-second' }],
+        });
+
+        assert.equal(config.name, 'from-second');
+        assert.equal(config.nested.host, 'localhost');
+        assert.equal(config.nested.port, 4000);
+      } finally {
+        await cleanup();
+      }
+    });
+
+    it('allows a custom envSource to override a file value with an empty string', async () => {
+      const path = './tmp/test/config.json';
+      const schema = z.object({
+        name: z.string(),
+        value: z.string(),
+      });
+      const data = { name: 'from-file', value: 'from-file' };
+      const { cleanup } = await createConfigFiles([{ path, data }]);
+
+      try {
+        const config = getConfig({
+          schema,
+          configPath: [path],
+          envSources: [{ value: '' }],
+        });
+
+        assert.equal(config.name, 'from-file');
+        assert.equal(config.value, '');
+      } finally {
+        await cleanup();
+      }
+    });
+
+    it('applies envSources with getConfigAsync after files in order', async () => {
+      const path = './tmp/test/config.json';
+      const schema = z.object({
+        mode: z.string(),
+        port: z.number(),
+      });
+      const data = { mode: 'from-file', port: 3000 };
+      const { cleanup } = await createConfigFiles([{ path, data }]);
+
+      try {
+        const config = await getConfigAsync({
+          schema,
+          configPath: [path],
+          envSources: [{ port: '5000' }, { port: 6000, mode: 'from-env-source' }],
+        });
+
+        assert.equal(config.mode, 'from-env-source');
+        assert.equal(config.port, 6000);
+      } finally {
         await cleanup();
       }
     });

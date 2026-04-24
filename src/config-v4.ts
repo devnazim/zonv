@@ -16,7 +16,8 @@ export interface GetConfigOptions<S extends ZodObject> extends BaseGetConfigOpti
  * Configuration is loaded in the following order (later sources override earlier):
  * 1. Config files (configPath or default 'config/config.json')
  * 2. Secrets files (secretsPath or default 'secrets/secrets.json')
- * 3. Environment variables (using delimiter for nested paths, defaults to '___')
+ * 3. Environment sources (`envSources`, defaults to [process.env])
+ * 4. Later `envSources` entries override earlier ones
  *
  * @param options - Configuration options
  * @returns Validated and typed configuration object
@@ -42,9 +43,13 @@ export interface GetConfigOptions<S extends ZodObject> extends BaseGetConfigOpti
  * // With custom delimiter
  * const config = getConfig({ schema, delimiter: '__' });
  * // Now uses 'server__port' instead of 'server___port' for nested paths
+ *
+ * @example
+ * // With multiple env-like sources
+ * const config = getConfig({ schema, envSources: [import.meta.env, process.env] });
  */
-export const getConfig = <S extends ZodObject>({ schema, configPath, secretsPath, env, debug = false, delimiter }: GetConfigOptions<S>): z.infer<S> => {
-  return getConfigCore<z.infer<S>>({ configPath, secretsPath, env, debug, delimiter }, schema, zodV4Adapter);
+export const getConfig = <S extends ZodObject>({ schema, configPath, secretsPath, env, debug = false, envSources, delimiter }: GetConfigOptions<S>): z.infer<S> => {
+  return getConfigCore<z.infer<S>>({ configPath, secretsPath, env, debug, envSources, delimiter }, schema, zodV4Adapter);
 };
 
 /**
@@ -55,7 +60,8 @@ export const getConfig = <S extends ZodObject>({ schema, configPath, secretsPath
  * Configuration is loaded in the following order (later sources override earlier):
  * 1. Config files (configPath or default 'config/config.json')
  * 2. Secrets files (secretsPath or default 'secrets/secrets.json')
- * 3. Environment variables (using delimiter for nested paths, defaults to '___')
+ * 3. Environment sources (`envSources`, defaults to [process.env])
+ * 4. Later `envSources` entries override earlier ones
  *
  * @param options - Configuration options
  * @returns Promise resolving to validated and typed configuration object
@@ -71,6 +77,6 @@ export const getConfig = <S extends ZodObject>({ schema, configPath, secretsPath
  * const config = await getConfigAsync({ schema });
  * console.log(config.PORT); // Type-safe access
  */
-export const getConfigAsync = async <S extends ZodObject>({ schema, configPath, secretsPath, env, debug = false, delimiter }: GetConfigOptions<S>): Promise<z.infer<S>> => {
-  return getConfigAsyncCore<z.infer<S>>({ configPath, secretsPath, env, debug, delimiter }, schema, zodV4Adapter);
+export const getConfigAsync = async <S extends ZodObject>({ schema, configPath, secretsPath, env, debug = false, envSources, delimiter }: GetConfigOptions<S>): Promise<z.infer<S>> => {
+  return getConfigAsyncCore<z.infer<S>>({ configPath, secretsPath, env, debug, envSources, delimiter }, schema, zodV4Adapter);
 };

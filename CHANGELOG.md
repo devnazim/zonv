@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-04-23
+
+### Added
+
+- Added `envSources` support to `getConfig()`, `getConfigAsync()`, and `getConfigFromEnv()` so configuration can be loaded from ordered environment-like sources such as `process.env`, `import.meta.env`, or custom plain objects
+- Added precedence control for environment-like sources where later `envSources` entries override earlier ones
+- Added test coverage for ordered env source precedence and non-string env source values in both Zod v3 and Zod v4 paths
+- Added Astro documentation showing how to use zonv with `import.meta.env` for server and public config
+
+### Changed
+
+- `getConfig()` and `getConfigAsync()` now document precedence as files, then `envSources` in array order; the default behavior remains unchanged via `envSources: [process.env]`
+- `getConfigFromEnv()` now defaults to `envSources: [process.env]` while allowing alternative env-like sources without changing existing consumers
+- Environment source loading now accepts direct typed values from custom `envSources` in addition to string values from standard env variables
+
 ## [2.2.3] - 2026-04-13
 
 ### Added
@@ -197,7 +212,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Environment variable overrides
 - TypeScript support with full type inference
 
-[Unreleased]: https://github.com/devnazim/zonv/compare/v2.2.2...HEAD
+[Unreleased]: https://github.com/devnazim/zonv/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/devnazim/zonv/compare/v2.2.3...v2.3.0
+[2.2.3]: https://github.com/devnazim/zonv/compare/v2.2.2...v2.2.3
 [2.2.2]: https://github.com/devnazim/zonv/compare/v2.2.0...v2.2.2
 [2.2.0]: https://github.com/devnazim/zonv/compare/v2.1.3...v2.2.0
 [2.1.3]: https://github.com/devnazim/zonv/compare/v2.1.2...v2.1.3

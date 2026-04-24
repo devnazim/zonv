@@ -19,7 +19,7 @@ import { DEFAULT_ENV_DELIMITER, type BaseGetConfigOptions, type ZodAdapter } fro
  * @returns Validated configuration object
  */
 export const getConfigCore = <T>(options: BaseGetConfigOptions, schema: unknown, adapter: ZodAdapter): T => {
-  const { configPath, secretsPath, env, debug = false, delimiter = DEFAULT_ENV_DELIMITER } = options;
+  const { configPath, secretsPath, env, debug = false, envSources = [process.env], delimiter = DEFAULT_ENV_DELIMITER } = options;
   validateDelimiter(delimiter);
   const log = createLogger(debug);
 
@@ -31,7 +31,7 @@ export const getConfigCore = <T>(options: BaseGetConfigOptions, schema: unknown,
     merge(config, getFileContent(path));
   }
 
-  applyEnvVars(config, schema, adapter, log, delimiter);
+  applyEnvVars(config, schema, adapter, log, delimiter, envSources);
 
   return validateConfig<T>(schema, config, adapter, log, debug);
 };
@@ -46,7 +46,7 @@ export const getConfigCore = <T>(options: BaseGetConfigOptions, schema: unknown,
  * @returns Promise resolving to validated configuration object
  */
 export const getConfigAsyncCore = async <T>(options: BaseGetConfigOptions, schema: unknown, adapter: ZodAdapter): Promise<T> => {
-  const { configPath, secretsPath, env, debug = false, delimiter = DEFAULT_ENV_DELIMITER } = options;
+  const { configPath, secretsPath, env, debug = false, envSources = [process.env], delimiter = DEFAULT_ENV_DELIMITER } = options;
   validateDelimiter(delimiter);
   const log = createLogger(debug);
 
@@ -71,7 +71,7 @@ export const getConfigAsyncCore = async <T>(options: BaseGetConfigOptions, schem
     merge(config, content);
   }
 
-  applyEnvVars(config, schema, adapter, log, delimiter);
+  applyEnvVars(config, schema, adapter, log, delimiter, envSources);
 
   return validateConfig<T>(schema, config, adapter, log, debug);
 };
