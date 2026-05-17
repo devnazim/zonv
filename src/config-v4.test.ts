@@ -680,6 +680,62 @@ describe('getConfig with zod/v4', { concurrency: false }, () => {
     });
   });
 
+  describe('Zod 4.4.x compatibility', () => {
+    it('materializes .catch() fallback values for absent object keys', async () => {
+      const path = './tmp/test/config.json';
+      const schema = z.object({
+        name: z.string(),
+        port: z.coerce.number().catch(3000),
+      });
+      const data = { name: 'test' };
+      const { cleanup } = await createConfigFiles([{ path, data }]);
+      try {
+        const config = getConfig({ schema, configPath: [path] });
+        assert.equal(config.name, 'test');
+        assert.equal(config.port, 3000);
+      } finally {
+        await cleanup();
+      }
+    });
+
+    it('applies explicit undefined values from custom envSources', () => {
+      const schema = z.object({
+        value: z.undefined(),
+      });
+
+      const config = getConfigFromEnv({
+        schema,
+        envSources: [{ value: undefined }],
+      });
+
+      assert.ok(Object.prototype.hasOwnProperty.call(config, 'value'));
+      assert.equal(config.value, undefined);
+    });
+
+    it('lets custom envSources override file values with explicit undefined', async () => {
+      const path = './tmp/test/config.json';
+      const schema = z.object({
+        name: z.string(),
+        value: z.undefined(),
+      });
+      const data = { name: 'test', value: 'from-file' };
+      const { cleanup } = await createConfigFiles([{ path, data }]);
+      try {
+        const config = getConfig({
+          schema,
+          configPath: [path],
+          envSources: [{ value: undefined }],
+        });
+
+        assert.equal(config.name, 'test');
+        assert.ok(Object.prototype.hasOwnProperty.call(config, 'value'));
+        assert.equal(config.value, undefined);
+      } finally {
+        await cleanup();
+      }
+    });
+  });
+
   describe('getConfigAsync', () => {
     it('loads config asynchronously', async () => {
       const path = './tmp/test/config.json';

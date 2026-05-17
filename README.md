@@ -22,9 +22,9 @@ Zonv is a package that enables you to validate your application configuration us
 | Zod Version | Status | Notes                        |
 | ----------- | ------ | ---------------------------- |
 | 3.24.x      | Tested | Use `zonv/v3` import path    |
-| 4.3.x       | Tested | Default import (recommended) |
+| 4.4.x       | Tested | Default import (recommended) |
 
-> **Note on Zod 4.3.x**: This version introduced some breaking changes to `.pick()`, `.omit()`, and `.extend()` methods when used on schemas with refinements. These changes don't affect zonv's functionality, but may affect your schema definitions. See the [Zod 4.3.0 release notes](https://github.com/colinhacks/zod/releases/tag/v4.3.0) for details.
+> **Note on Zod 4.3+ and 4.4.x**: Zod 4.3 introduced some breaking changes to `.pick()`, `.omit()`, and `.extend()` methods when used on schemas with refinements. Zod 4.4 also tightened object key optionality around schemas such as `z.undefined()` and restored fallback handling for absent object keys. These changes don't affect zonv's core functionality, but may affect your schema definitions. See the [Zod 4.4.0 release notes](https://github.com/colinhacks/zod/releases/tag/v4.4.0) for details.
 
 ## Module Support
 
@@ -469,7 +469,7 @@ PORT=4000 DATABASE_URL=https://new-db.example.com node app.js
 
 OR use env package e.g. dotenv.
 
-> **Note:** Environment variable names are **case-sensitive** and must match the schema property names exactly. For example, if your schema has `PORT`, you must use `PORT` (not `port` or `Port`). Empty strings from `process.env` are ignored and won't override file-based configuration, while custom `envSources` can intentionally provide `''`.
+> **Note:** Environment variable names are **case-sensitive** and must match the schema property names exactly. For example, if your schema has `PORT`, you must use `PORT` (not `port` or `Port`). Empty strings from `process.env` are ignored and won't override file-based configuration, while custom `envSources` can intentionally provide `''` or `undefined`.
 
 ### Merging and Precedence
 
@@ -496,7 +496,7 @@ When values come from `process.env`, `import.meta.env`, or `.env` files, custom 
 - **Numbers/Booleans**: Use Zod's `z.coerce.*` methods for automatic conversion
 - **Objects/Arrays**: Provide as JSON strings in the environment variable
 
-If you pass custom `envSources`, already-typed values such as numbers, booleans, objects, and arrays are also supported directly.
+If you pass custom `envSources`, already-typed values such as numbers, booleans, objects, arrays, and intentional `undefined` values are also supported directly.
 
 ```typescript
 const configSchema = z.object({
@@ -541,7 +541,7 @@ process.env.SERVER = '{"host": "0.0.0.0"}';
 
 - **`debug`** (boolean, optional): Enable debug logging to see which files and environment variables are being loaded. Useful for troubleshooting configuration issues.
 
-- **`envSources`** (array, optional): Ordered environment-like sources to apply after files. Defaults to `[process.env]`. Later entries override earlier ones. Useful for sources such as `import.meta.env`.
+- **`envSources`** (array, optional): Ordered environment-like sources to apply after files. Defaults to `[process.env]`. Later entries override earlier ones. Useful for sources such as `import.meta.env`; custom sources may provide typed values directly, including intentional `undefined` values.
 
 - **`delimiter`** (string, optional): The delimiter used to separate nested paths in environment variable names. Defaults to `___` (triple underscore). Any non-empty string is supported. For example, with `delimiter: '__'`, use `server__port` instead of `server___port`.
 
@@ -557,7 +557,7 @@ Use this function when you only want to load configuration from environment vari
 
 - **`schema`** (Zod schema, required): The Zod schema used to validate your configuration.
 - **`debug`** (boolean, optional): Enable debug logging.
-- **`envSources`** (array, optional): Ordered environment-like sources to apply. Defaults to `[process.env]`. Later entries override earlier ones.
+- **`envSources`** (array, optional): Ordered environment-like sources to apply. Defaults to `[process.env]`. Later entries override earlier ones. Custom sources may provide typed values directly, including intentional `undefined` values.
 - **`delimiter`** (string, optional): The delimiter for nested paths. Defaults to `___`. Any non-empty string is supported.
 
 #### Returns:

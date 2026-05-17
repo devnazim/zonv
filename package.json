@@ -1,6 +1,6 @@
 {
   "name": "zonv",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Type-safe configuration management with Zod schema validation. Load config from JSON files and environment variables with full TypeScript support.",
   "type": "module",
   "sideEffects": false,
@@ -115,14 +115,14 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/lodash.merge": "^4.6.9",
-    "@types/node": "^25.6.0",
-    "eslint": "^10.2.0",
+    "@types/node": "^25.8.0",
+    "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.5.0",
-    "prettier": "^3.8.2",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.3",
     "tslib": "^2.8.1",
-    "typescript": "^6.0.2",
-    "typescript-eslint": "^8.58.1"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.3"
   },
   "peerDependencies": {
     "zod": "^3.0.0 || ^4.0.0"

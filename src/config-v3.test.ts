@@ -544,6 +544,43 @@ describe('getConfig', { concurrency: false }, () => {
       }
     });
 
+    it('applies explicit undefined values from custom envSources', () => {
+      const schema = z.object({
+        value: z.undefined(),
+      });
+
+      const config = getConfigFromEnv({
+        schema,
+        envSources: [{ value: undefined }],
+      });
+
+      assert.ok(Object.prototype.hasOwnProperty.call(config, 'value'));
+      assert.equal(config.value, undefined);
+    });
+
+    it('lets custom envSources override file values with explicit undefined', async () => {
+      const path = './tmp/test/config.json';
+      const schema = z.object({
+        name: z.string(),
+        value: z.undefined(),
+      });
+      const data = { name: 'test', value: 'from-file' };
+      const { cleanup } = await createConfigFiles([{ path, data }]);
+      try {
+        const config = getConfig({
+          schema,
+          configPath: [path],
+          envSources: [{ value: undefined }],
+        });
+
+        assert.equal(config.name, 'test');
+        assert.ok(Object.prototype.hasOwnProperty.call(config, 'value'));
+        assert.equal(config.value, undefined);
+      } finally {
+        await cleanup();
+      }
+    });
+
     it('applies envSources with getConfigAsync after files in order', async () => {
       const path = './tmp/test/config.json';
       const schema = z.object({

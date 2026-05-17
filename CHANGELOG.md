@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.1] - 2026-05-17
+
+### Added
+
+- Added Zod 4.4.x compatibility coverage for absent-key `.catch()` fallbacks and required `z.undefined()` object keys
+
+### Changed
+
+- Updated dev dependency ranges and lockfile resolutions to latest compatible versions:
+  - `@types/node`: 25.6.0 -> 25.8.0
+  - `eslint`: 10.2.0 -> 10.4.0
+  - `globals`: 17.5.0 -> 17.6.0
+  - `prettier`: 3.8.2 -> 3.8.3
+  - `typescript`: 6.0.2 -> 6.0.3
+  - `typescript-eslint`: 8.58.1 -> 8.59.3
+- Updated the tested Zod v4 documentation from 4.3.x to 4.4.x
+- Updated the lockfile Zod peer test resolution from 4.3.6 to 4.4.3
+
+### Fixed
+
+- Custom `envSources` now apply explicitly present `undefined` values, preserving support for Zod 4.4's required `z.undefined()` object keys while keeping `process.env` empty-string behavior unchanged
+
 ## [2.3.0] - 2026-04-23
 
 ### Added

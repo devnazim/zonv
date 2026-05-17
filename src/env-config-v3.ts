@@ -17,7 +17,7 @@ export interface GetConfigFromEnvOptions<S extends ZodV3ObjectLike> extends Base
  * Defaults to reading from [process.env], but custom `envSources` such as [import.meta.env]
  * may also provide direct typed values.
  * Empty strings from `process.env` are ignored for backward compatibility,
- * while custom `envSources` can intentionally provide `''`.
+ * while custom `envSources` can intentionally provide `''` or `undefined`.
  *
  * Environment variables use the delimiter (defaults to '___') as the nested path separator.
  * For example, `server___port` maps to `{ server: { port: ... } }`.

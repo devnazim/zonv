@@ -24,7 +24,7 @@ export interface BaseGetConfigOptions {
    * Later sources override earlier ones. Defaults to [process.env].
    * Examples: process.env, import.meta.env, or custom plain objects.
    * Empty strings from process.env are ignored for backward compatibility,
-   * while custom envSources can intentionally provide ''.
+   * while custom envSources can intentionally provide '' or undefined.
    */
   envSources?: readonly EnvSource[];
   /**
@@ -50,7 +50,7 @@ export interface BaseGetConfigFromEnvOptions {
    * Later sources override earlier ones. Defaults to [process.env].
    * Examples: process.env, import.meta.env, or custom plain objects.
    * Empty strings from process.env are ignored for backward compatibility,
-   * while custom envSources can intentionally provide ''.
+   * while custom envSources can intentionally provide '' or undefined.
    */
   envSources?: readonly EnvSource[];
   /**

@@ -49,24 +49,31 @@ const formatEnvValueForLog = (value: unknown): string => {
   }
 
   try {
-    return JSON.stringify(value);
+    const jsonValue = JSON.stringify(value);
+    return jsonValue === undefined ? String(value) : jsonValue;
   } catch {
     return String(value);
   }
 };
 
 /**
- * Returns whether the provided env-like value should be applied.
+ * Returns whether the provided env-like key should be applied.
  *
  * Empty strings from `process.env` are ignored for backward compatibility,
- * but custom `envSources` may intentionally use `''` as an override.
+ * but custom `envSources` may intentionally use `''` or `undefined` as an override.
  *
- * @param value - Raw env-like value
  * @param envSource - Source the value came from
+ * @param envKey - Key to look up in the source
  * @returns True when the value should be applied
  */
-const hasEnvValue = (value: unknown, envSource: EnvSource): boolean => {
-  return value !== undefined && (value !== '' || envSource !== process.env);
+const hasEnvValue = (envSource: EnvSource, envKey: string): boolean => {
+  const value = envSource[envKey];
+
+  if (envSource === process.env) {
+    return value !== undefined && value !== '';
+  }
+
+  return Object.prototype.hasOwnProperty.call(envSource, envKey);
 };
 
 /**
@@ -112,12 +119,11 @@ export const applyEnvVars = (
   for (const [sourceIndex, envSource] of envSources.entries()) {
     for (const path of propertiesPaths) {
       const envKey = path.split('.').join(delimiter);
-      const envValue = envSource[envKey];
-
       // Keep ignoring empty strings from process.env for backward compatibility,
-      // but allow custom envSources to intentionally override with ''.
-      if (hasEnvValue(envValue, envSource)) {
+      // but allow custom envSources to intentionally override with '' or undefined.
+      if (hasEnvValue(envSource, envKey)) {
         try {
+          const envValue = envSource[envKey];
           const schemaProp = get(schemaShape, path);
           const parsedValue = parseEnvValue(envValue, schemaProp, adapter);
           dset(config, path, parsedValue);
