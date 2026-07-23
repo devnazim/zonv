@@ -14,7 +14,7 @@ Zonv is a package that enables you to validate your application configuration us
 
 ## Requirements
 
-- Node.js >= 18.0.0
+- Node.js >= 20.19.0
 - Zod ^3.0.0 or ^4.0.0 (peer dependency)
 
 ### Tested Zod Versions
