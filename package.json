@@ -1,6 +1,6 @@
 {
   "name": "zonv",
-  "version": "2.3.1",
+  "version": "3.0.0",
   "description": "Type-safe configuration management with Zod schema validation. Load config from JSON files and environment variables with full TypeScript support.",
   "type": "module",
   "sideEffects": false,
@@ -15,6 +15,7 @@
     "!dist/**/*.test.*",
     "!dist/**/test-utils.*",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "exports": {
@@ -73,7 +74,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/devnazim/zonv"
+    "url": "git+https://github.com/devnazim/zonv.git"
   },
   "homepage": "https://github.com/devnazim/zonv#readme",
   "bugs": {

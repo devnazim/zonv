@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-07-23
+
+### Changed
+
+- **Breaking:** Raised the minimum supported Node.js version from 18.0.0 to 20.19.0
+- Refreshed development dependency lockfile resolutions, including ESLint, typescript-eslint, Prettier, globals, and Node.js types
+
+### Security
+
+- Updated the transitive development dependency `brace-expansion` from 5.0.5 to 5.0.8 to address denial-of-service vulnerabilities
+
 ## [2.3.1] - 2026-05-17
 
 ### Added
@@ -234,7 +245,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Environment variable overrides
 - TypeScript support with full type inference
 
-[Unreleased]: https://github.com/devnazim/zonv/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/devnazim/zonv/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/devnazim/zonv/compare/v2.3.1...v3.0.0
+[2.3.1]: https://github.com/devnazim/zonv/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/devnazim/zonv/compare/v2.2.3...v2.3.0
 [2.2.3]: https://github.com/devnazim/zonv/compare/v2.2.2...v2.2.3
 [2.2.2]: https://github.com/devnazim/zonv/compare/v2.2.0...v2.2.2
