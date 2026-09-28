@@ -22,7 +22,7 @@ Zonv is a package that enables you to validate your application configuration us
 | Zod Version   | Status | Notes                        |
 | ------------- | ------ | ---------------------------- |
 | 3.24.x–3.25.x | Tested | Use `zonv/v3` import path    |
-| 4.4.x         | Tested | Default import (recommended) |
+| 4.6.x         | Tested | Default import (recommended) |
 
 > **Note on Zod 4.3+ and 4.4.x**: Zod 4.3 introduced some breaking changes to `.pick()`, `.omit()`, and `.extend()` methods when used on schemas with refinements. Zod 4.4 also tightened object key optionality around schemas such as `z.undefined()` and restored fallback handling for absent object keys. These changes don't affect zonv's core functionality, but may affect your schema definitions. See the [Zod 4.4.0 release notes](https://github.com/colinhacks/zod/releases/tag/v4.4.0) for details.
 

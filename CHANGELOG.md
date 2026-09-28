@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-09-28
+
+### Changed
+
+- Updated ESLint, typescript-eslint, Prettier, globals, and Node.js types to their latest stable versions
+- Updated the lockfile Zod peer resolution from 4.4.3 to 4.6.5 and verified ESM, CommonJS, and consumer types with Zod 3.24.4, 3.25.76, and 4.6.5
+- Kept TypeScript at 6.0.3 for the package's build and lint tooling; verified that consumers can use TypeScript 7.0.2
+
+### Security
+
+- Updated the transitive development dependency `brace-expansion` from 5.0.8 to 5.0.12 to address a denial-of-service vulnerability
+
 ## [3.0.0] - 2026-07-23
 
 ### Changed
