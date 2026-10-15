@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.2] - 2026-10-15
+
+### Fixed
+
+- Fixed a `process is not defined` crash when loading custom `envSources` in browsers, for both Zod v3 and v4. Browser callers must still provide `envSources`; the default remains `[process.env]`.
+
+### Changed
+
+- Updated development tools: `@types/node` to 26.6.5, `eslint` to 10.12.0, `globals` to 17.13.0, `prettier` to 3.9.10, and `typescript-eslint` to 8.71.2
+- Kept TypeScript at 6.0.3 for compatibility with typescript-eslint
+
 ## [3.0.1] - 2026-09-28
 
 ### Changed
@@ -257,7 +268,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Environment variable overrides
 - TypeScript support with full type inference
 
-[Unreleased]: https://github.com/devnazim/zonv/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/devnazim/zonv/compare/v3.0.2...HEAD
+[3.0.2]: https://github.com/devnazim/zonv/compare/v3.0.1...v3.0.2
+[3.0.1]: https://github.com/devnazim/zonv/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/devnazim/zonv/compare/v2.3.1...v3.0.0
 [2.3.1]: https://github.com/devnazim/zonv/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/devnazim/zonv/compare/v2.2.3...v2.3.0
