@@ -69,7 +69,7 @@ const formatEnvValueForLog = (value: unknown): string => {
 const hasEnvValue = (envSource: EnvSource, envKey: string): boolean => {
   const value = envSource[envKey];
 
-  if (envSource === process.env) {
+  if (typeof process !== 'undefined' && envSource === process.env) {
     return value !== undefined && value !== '';
   }
 
